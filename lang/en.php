@@ -70,5 +70,6 @@ return [
     "log-out" => "Log Out",
     "required" => "Required",
     "back" => "Back",
-    "session-expired" => "Session expired, reload the page and try again"
+    "session-expired" => "Session expired, try reloading the page",
+    "verify-2fa" => "Verify 2fa"
 ];

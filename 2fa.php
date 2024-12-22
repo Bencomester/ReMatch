@@ -44,19 +44,51 @@ if (empty($enabled)) {
     <form action="includes/2fa.inc.php" id="form" method="post">
         <label for="otp">2fa code</label>
         <input
-            type="text"
-            name="otp"
-            id="otp"
-            placeholder="123 456"
-            autocomplete="off" required>
+                type="text"
+                name="otp"
+                id="otp"
+                placeholder="123 456"
+                autocomplete="off"
+                autofocus required>
         <button type="submit" class="submit" id="submit" data-loading-text="Loading...">
-            <span class="button-text"><?= $texts["login"]?></span>
+            <span class="button-text"><?= $texts["verify-2fa"] ?></span>
             <span class="spinner"></span>
         </button>
 
     </form>
-    <a href="myprofile">My profile</a>
+    <?php
+    if ($_SESSION["logged-in"] ?? false) echo '<a href="myprofile">My profile</a>'
+    ?>
 </div>
+
+<script>
+    // Function to format the OTP field as 000 000
+    function formatOtp(input) {
+        // Remove all non-numeric characters
+        let value = input.value.replace(/\D/g, '');
+
+        // Limit to 6 digits
+        if (value.length > 6) {
+            value = value.substring(0, 6);
+        }
+
+        // Format value as 000 000 (inserting a space after every 3 digits)
+        if (value.length <= 3) {
+            input.value = value;
+        } else {
+            input.value = value.replace(/(\d{3})(\d{0,3})/, '$1 $2');
+        }
+    }
+
+    // Add event listener for the OTP input field
+    document.addEventListener("DOMContentLoaded", function () {
+        const otpInput = document.getElementById('otp');
+
+        otpInput.addEventListener('input', function () {
+            formatOtp(otpInput);
+        });
+    });
+</script>
 
 </body>
 </html>
