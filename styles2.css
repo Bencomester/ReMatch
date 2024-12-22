@@ -1,0 +1,84 @@
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #84CEEB, #5680E9, #C1C8E4);
+}
+.circle{
+    padding: 20px;
+    position: fixed; 
+    bottom: 5px;
+    right: 5px;
+    /*fix igazitas(jobb also sarok)*/
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    /*kor alak*/
+    background-color: #4CAF50;
+    /*szinek, betu*/
+    justify-content: center;
+    text-align: center;
+    line-height: 99px;
+    /*kozepreigazitas*/
+}
+.plus{
+    color: white;
+    font-size: 50pt;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.circle:hover {
+    background-color: green;
+    transform: scale(1.05);
+}
+.navbar {
+    background-color: #4CAF50; /* Zöld háttér */
+    color: white; /* Fehér szöveg */
+    padding: 15px; /* Párnázás */
+    font-size: 24px; /* Betűméret */
+    font-family: Arial, Helvetica, sans-serif;
+}
+.navdiv{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.logo{
+    width: 100px;
+    height: 100px;
+}
+button{
+    background-color: black;
+    margin-left: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    width: 120px;
+    height: 50px;
+}
+button a{
+    color: white;
+    font-size: 10pt;
+    text-decoration: none;
+}
+.blog{
+    width: 300px;
+    height: 200px;
+    padding: 20px;
+    background: linear-gradient(145deg, #ff8a00, #da1b60);  /* Gradient background */
+    border-radius: 20px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2), -10px -10px 20px rgba(255, 255, 255, 0.3); /* Soft shadow for depth */
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+.blog:hover {
+    transform: scale(1.05); /* Slightly scale up the div */
+    box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.5); /* More intense shadow on hover */
+    background: linear-gradient(145deg, #da1b60, #ff8a00);
+}

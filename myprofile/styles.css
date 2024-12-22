@@ -1,0 +1,140 @@
+/* General Reset and Box Model */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Style */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #5AB9EA, #C1C8E4); /* Blue gradient background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+    padding: 20px;
+}
+
+/* Profile Container */
+.profile-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 200%;
+    max-width: 500px;
+    text-align: center;
+}
+
+/* Profile Picture */
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* User Info */
+.user-name {
+    font-size: 1.8rem;
+    color: #6880E9; /* Primary blue color */
+    margin-bottom: 10px;
+}
+
+.user-email {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.user-role {
+    font-size: 1rem;
+    color: #8860D0; /* Secondary blue color */
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Profile Actions */
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Edit Button */
+.edit-btn {
+    background-color: #6880E9;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #5AB9EA;
+    transform: scale(1.05);
+}
+
+/* Logout Button */
+.logout-btn {
+    background-color: #FF5252;
+    color: white;
+}
+
+.logout-btn:hover {
+    background-color: #E53935;
+    transform: scale(1.05);
+}
+
+.language-dropdown {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    z-index: 1000;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .profile-container {
+        padding: 20px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

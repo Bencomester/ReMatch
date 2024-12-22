@@ -1,0 +1,13 @@
+{
+    "require": {
+        "firebase/php-jwt": "^6.10",
+        "phpmailer/phpmailer": "^6.9",
+      "ext-json": "*",
+      "ext-pdo": "*",
+      "ext-curl": "*",
+      "ext-gd": "*",
+        "geoip2/geoip2": "^3.1",
+        "spomky-labs/otphp": "^11.3",
+        "endroid/qr-code": "^6.0"
+    }
+}

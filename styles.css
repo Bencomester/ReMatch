@@ -1,0 +1,233 @@
+/* General Reset and Box Model */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Style */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #5AB9EA, #C1C8E4); /* Stronger blue to light gray-blue gradient */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+    padding: 20px;
+}
+
+/* Login Container */
+.login-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Language Dropdown in Top Right Corner */
+.language-dropdown {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    z-index: 1000;
+}
+
+/* Heading Style */
+.login-container h2 {
+    font-size: 1.8rem;
+    color: #6880E9; /* Primary blue color */
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+/* Form Elements */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Label Style */
+label {
+    text-align: left;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+    margin-bottom: 1px;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"] {
+    padding: 10px;
+    border: 1px solid #C1C8E4; /* Light blue-gray border */
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Italic Placeholders */
+input::placeholder {
+    font-style: italic;
+    color: #888;
+}
+
+/* Focus Effect on Input Fields */
+input:focus,
+#phone:focus {
+    border-color: #6880E9; /* Primary blue color for focus */
+    border-width: 2px;
+    box-shadow: 0 0 5px rgba(104, 128, 233, 0.3); /* Soft blue glow effect */
+    outline: none;
+}
+
+/* Button Style */
+button {
+    padding: 10px;
+    background-color: #6880E9; /* Primary blue color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 5%;
+    margin-bottom: 3%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+button:disabled {
+    background-color: #C1C8E4;
+    cursor: not-allowed;
+}
+
+.submit:hover {
+    background-color: #5AB9EA; /* Lighter blue on hover */
+    transform: scale(1.05);
+}
+
+/* Error Message Style */
+.login-error {
+    background-color: #FF5252;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.login-success {
+    background-color: green; /* Light blue color for success */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+.login-container input.error {
+    border: 2px solid red !important;
+}
+
+a {
+    color: #6880E9; /* Primary blue link color */
+    text-align: center;
+    margin-top: 10px;
+    display: block;
+}
+
+a:hover {
+    color: #5AB9EA; /* Lighter blue on hover */
+    text-decoration: underline;
+}
+
+.password-container {
+    width: 100%;
+    position: relative;
+}
+
+#password {
+    width: 100%;
+}
+
+.password-container button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-170%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #333;
+    padding: 0;
+    z-index: 2;
+}
+
+.button-text {
+    display: inline-block;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 3px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 10px;
+    display: none;
+    position: absolute;
+    right: 47.5%;
+}
+
+button.loading .button-text {
+    visibility: hidden;
+}
+
+button.loading .spinner {
+    display: inline-block;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 20px;
+    }
+
+    button {
+        padding: 8px;
+    }
+}
