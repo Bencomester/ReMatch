@@ -70,5 +70,5 @@ return [
     "log-out" => "Log Out",
     "required" => "Required",
     "back" => "Back",
-    "session-expired" => "Session expired, reload page and try again"
+    "session-expired" => "Session expired, reload page and try again!"
 ];
