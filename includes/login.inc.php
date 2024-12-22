@@ -11,6 +11,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !isset($_SESSION["userid"])) {
     if (!validateCSRFToken($_POST["csrf_token"])) {
         $_SESSION["csrf-fail"] = true;
         mainPage();
+        exit();
     }
     $username=$_POST["username"];
     $pwd = $_POST["password"];
@@ -33,7 +34,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !isset($_SESSION["userid"])) {
 
                 if ($enabled == 1) {
 
-                    header("Location: /rematch/2fa.php");
+                    header("Location: " . str_replace("/var/www/html", "", __DIR__) . "/../2fa.php");
                 } else {
                     loginSuccessful($data);
                     exit();
