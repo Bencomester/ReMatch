@@ -13,7 +13,7 @@ function startSession() : void {
 
     session_set_cookie_params([
         'lifetime' => 60 * 60 * 24,
-        'domain' => 'server',  //Change to public domain
+        'domain' => '[REDACTED_LOCAL_IP]',  //Change to public domain
         'path' => '/',
         'secure' => false,     //Change to true, when in production
         'httponly' => true,
