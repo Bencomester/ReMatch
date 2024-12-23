@@ -71,5 +71,6 @@ return [
     "required" => "Required",
     "back" => "Back",
     "session-expired" => "Session expired, try reloading the page",
-    "verify-2fa" => "Verify 2fa"
+    "verify-2fa" => "Verify 2fa",
+    "submit" => "Submit",
 ];
