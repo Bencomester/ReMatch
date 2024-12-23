@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Random\RandomException;
 require_once __DIR__ . "/../mail.php";
 require_once __DIR__ . "/../emails/verify.php";
 require_once __DIR__ . "/dhb.inc.php";
@@ -87,7 +86,7 @@ function sendVerificationEmail(string $email, string $username="") : void
 {
     try {
         $token = bin2hex(random_bytes(16));
-    } catch (RandomException $e) {
+    } catch (Exception $e) {
         die($e->getMessage());
     }
 

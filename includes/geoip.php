@@ -4,7 +4,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use GeoIp2\Database\Reader;
 
-function getLocationData($ip) {
+function getLocationData($ipAddress)
+{
     try {
         // Path to the GeoLite2 database file
         $databaseFile = __DIR__ . '/GeoLite2-City.mmdb';
@@ -13,7 +14,7 @@ function getLocationData($ip) {
         $reader = new Reader($databaseFile);
 
         // Replace with the user's IP address
-        $ipAddress = '[REDACTED_IP]';
+        $ipAddress = '[REDACTED_IP]';           //  This line should be removed when out of LAN
 
         // Query the database
         $record = $reader->city($ipAddress);
@@ -45,7 +46,8 @@ function getUserIP() {
     return $ip;
 }
 
-function calculateDistance($lat1, $lon1, $lat2, $lon2) : float {
+function calculateDistance($lat1, $lon1, $lat2, $lon2): float
+{  // Result in kilometers
     $earthRadius = 6371; // Radius in kilometers
 
     $dLat = deg2rad($lat2 - $lat1);

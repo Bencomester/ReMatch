@@ -27,13 +27,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !isset($_SESSION["userid"])) {
             if (checkRateLimit(getUserIP(), "login")) {
 
                 $_SESSION['userid'] =  $data["id"];
-                $enabled = returnQuery("SELECT enabled FROM 2fa WHERE userid = :userid", ["userid" => $data["id"]]);
-                if (empty($enabled)) {
-                    $enabled = 0;
-                } else $enabled = $enabled["enabled"];
-
-                if ($enabled == 1) {
-
+                if (enabled2fa($data["id"])) {
                     header("Location: " . str_replace("/var/www/html", "", __DIR__) . "/../2fa.php");
                 } else {
                     loginSuccessful($data);
@@ -117,8 +111,8 @@ function cloudflareTurnstile($turnstileResponse) : bool
     curl_close($ch);
 
     $responseKeys = json_decode($response, true);
-    return true;
-    //return $responseKeys['success'];
+    return true;                                            //  This line should be   removed   when cloudflare is configured to be working
+    //return $responseKeys['success'];                      //  This line should be uncommented when cloudflare is configured to be working
 }
 
 function checkRateLimit($ip, $action, $limit = 10, $timeframe = 300) : bool {
@@ -155,9 +149,15 @@ function resetSessionAndCookieTime() : void
 
     session_destroy();
     startSession();
+    /** @noinspection PhpConditionAlreadyCheckedInspection */
     $_SESSION = $session;
 }
 
-function is2faEnabled($userid) : bool {
-    return !empty(returnQuery("SELECT userid FROM 2fa WHERE userid = :userid", ["userid" => $userid]));
+function enabled2fa($userid): bool
+{
+    $enabled = returnQuery("SELECT enabled FROM 2fa WHERE userid = :userid", ["userid" => $userid]);
+    if (empty($enabled)) {
+        $enabled = 0;
+    } else $enabled = $enabled["enabled"];
+    return $enabled == 1;
 }

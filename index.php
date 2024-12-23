@@ -2,7 +2,8 @@
 require_once "includes/config.php";
 require_once "includes/security.php";
 include("lang/index.php");
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once "includes/config.php";
+
 if (isset($_SESSION['logged-in'])) {
     header("Location: rematch.php");
     exit();
@@ -90,7 +91,7 @@ $texts = include "lang/$lang.php";
         const form = document.getElementById("form");
         const submitButton = document.getElementById("submit");
 
-        form.addEventListener("submit", function (event) {
+        form.addEventListener("submit", function () {
             // Show loading state
             submitButton.disabled = true;
             submitButton.classList.add('loading');

@@ -25,6 +25,7 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
     <link rel="stylesheet" href="editStyle.css">
     <link rel="stylesheet" href="../node_modules/intl-tel-input/build/css/intlTelInput.min.css">
     <script src="../node_modules/intl-tel-input/build/js/intlTelInputWithUtils.min.js"></script>
+    <!--suppress CssUnusedSymbol -->
     <style>
         .iti--allow-dropdown {
             width: 100%;
@@ -43,9 +44,10 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
         <div class="profile-picture-section">
             <label for="profile-picture">Profile Picture</label>
             <div class="profile-picture-preview">
-                <img id="profilePreview" src="<?= file_exists("../pfp/" . $_SESSION["userid"] . ".png") ? "../pfp/" . $_SESSION["userid"] . ".png" : (file_exists("../pfp/" . $_SESSION["userid"] . ".jpg") ? "../pfp/" . $_SESSION["userid"] . ".jpg" : "150.png") ?>" alt="Profile Picture">
+                <img id="profilePreview" src="<?= file_exists("../pfp/" . $_SESSION["userid"] . ".png") ? "../pfp/" . $_SESSION["userid"] . ".png" : (file_exists("../pfp/" . $_SESSION["userid"] . ".jpg") ? "../pfp/" . $_SESSION["userid"] . ".jpg" : "150.png") ?>"
+                     alt="Profile Picture">
             </div>
-            <input type="file" id="profile-picture" name="profile-picture" accept="image/*" onchange="previewProfilePicture(event)">
+            <input type="file" id="profile-picture" name="profile-picture" accept="image/*">
         </div>
 
         <!-- Name Field -->
@@ -118,15 +120,22 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
     });
 </script>
 <script>
-    function previewProfilePicture(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            const output = document.getElementById('profilePreview');
-            output.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById('profile-picture');
 
+        fileInput.addEventListener('change', function (event) {
+            previewProfilePicture(event);
+        });
+
+        function previewProfilePicture(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const output = document.getElementById('profilePreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    });
 </script>
 </body>
 </html>

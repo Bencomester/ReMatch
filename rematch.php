@@ -20,15 +20,15 @@ require "includes/blogdiv.php";
     <title>Rematch</title>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navdiv">
-        <img class="logo" src="../favicon.ico">
+<nav class="navbar">
+    <div class="navdiv">
+        <img class="logo" src="../favicon.ico" alt="logo">
         <h1>Rematch</h1>
         <button><a href="logout.php">Logout</a></button>
-        
-        </div>
-    </nav>
-            <?php
+
+    </div>
+</nav>
+<?php
 
             echo "Welcome, " . htmlspecialchars($_SESSION['username']) . "!";
             ?>

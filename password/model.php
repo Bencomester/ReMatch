@@ -1,7 +1,5 @@
 <?php
 
-use Random\RandomException;
-
 require_once '../includes/dhb.inc.php';
 require_once '../mail.php';
 require_once '../emails/reset.php';
@@ -23,7 +21,7 @@ function genTokenAndSendEmail($email) : void {
     // User exists, generate a token
     try {
         $token = bin2hex(random_bytes(50));
-    } catch (RandomException $e) {
+    } catch (Exception $e) {
         die($e->getMessage());
     } // Generate a random token
     $expires = 60 * 30; // Token expires in 30 minutes
