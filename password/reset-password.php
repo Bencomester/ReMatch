@@ -1,7 +1,7 @@
 <?php
 
 require_once "model.php";
-require_once "includes/config.php";
+require_once "../includes/config.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
