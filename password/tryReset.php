@@ -1,5 +1,5 @@
 <?php
-if(session_status() === PHP_SESSION_NONE) session_start();
+require_once "includes/config.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['token'] ?? '';

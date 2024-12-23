@@ -1,6 +1,6 @@
 <?php
 
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once "includes/config.php";
 require_once('../includes/dhb.inc.php');
 require_once('../includes/signup_contr.inc.php');
 require_once('../emails/email.php');

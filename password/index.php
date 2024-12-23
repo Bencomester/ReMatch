@@ -1,6 +1,6 @@
 <?php
 include "../lang/index.php";
-if (session_status() === PHP_SESSION_NONE) session_start();
+require_once "includes/config.php";
 if (isset($_GET['lang'])) $_SESSION['lang'] = $_GET['lang'];
 $lang = $_SESSION['lang'] ?? 'en';
 $texts = include "../lang/$lang.php";

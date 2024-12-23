@@ -1,6 +1,7 @@
 <?php
 require_once "includes/dhb.inc.php";
-if(session_status() === PHP_SESSION_NONE) session_start();
+require_once "includes/config.php";
+
 $success = false;
 $email = "";
 if (isset($_GET['email']) && isset($_GET['token'])) {

@@ -1,5 +1,5 @@
 <?php
-if(session_status() === PHP_SESSION_NONE) session_start();
+require_once "includes/config.php";
 require '../includes/dhb.inc.php';
 include_once '../lang/index.php';
 $token = $_GET['token'] ?? '';

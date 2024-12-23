@@ -1,5 +1,5 @@
 <?php
-if(session_status() === PHP_SESSION_NONE) session_start(); // Start the session
+require_once "includes/config.php";
 
 // Unset all session variables
 $_SESSION = array();

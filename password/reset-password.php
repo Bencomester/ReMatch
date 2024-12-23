@@ -1,8 +1,7 @@
 <?php
 
 require_once "model.php";
-
-if(session_status() === PHP_SESSION_NONE) session_start();
+require_once "includes/config.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
