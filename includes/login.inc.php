@@ -94,27 +94,6 @@ function setSessionData ($userid) : void {
     $_SESSION['username'] = $data["username"];
 }
 
-function cloudflareTurnstile($turnstileResponse) : bool
-{
-    $secretKey = '[REDACTED_CLOUDFLARE_TURNSTILE_KEY]';
-
-    // Verify the response with Cloudflare's API
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "https://challenges.cloudflare.com/turnstile/v0/siteverify");
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-        'secret' => $secretKey,
-        'response' => $turnstileResponse
-    ]));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    $responseKeys = json_decode($response, true);
-    return true;                                            //  This line should be   removed   when cloudflare is configured to be working
-    //return $responseKeys['success'];                      //  This line should be uncommented when cloudflare is configured to be working
-}
-
 function checkRateLimit($ip, $action, $limit = 10, $timeframe = 300) : bool {
     $query = "SELECT COUNT(*) as attempts FROM rate_limits 
               WHERE ip = :ip AND action = :action 

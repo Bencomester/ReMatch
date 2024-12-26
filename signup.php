@@ -36,7 +36,9 @@ if (isset($_GET["newemail"]) && !!filter_var($_GET["newemail"], FILTER_VALIDATE_
     <link rel="stylesheet" href="node_modules/intl-tel-input/build/css/intlTelInput.min.css">
     <script src="node_modules/intl-tel-input/build/js/intlTelInputWithUtils.min.js"></script>
     <script src="node_modules/intl-tel-input/build/js/utils.js" type="module"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <title><?= $texts["title-signup"]?></title>
+    <!--suppress CssUnusedSymbol -->
     <style>
         .requirement {
             color: red;
@@ -173,8 +175,10 @@ if (isset($_GET["newemail"]) && !!filter_var($_GET["newemail"], FILTER_VALIDATE_
                 <p class="requirement" id="length-requirement"><span class="icon">✗</span> <?= $texts["pwd-8-chars"]?></p>
                 <p class="requirement" id="uppercase-requirement"><span class="icon">✗</span> <?= $texts["pwd-upper"]?></p>
                 <p class="requirement" id="lowercase-requirement"><span class="icon">✗</span> <?= $texts["pwd-lower"]?></p>
-                <p class="requirement" id="number-requirement"><span class="icon">✗</span> <?= $texts["pwd-number"]?></p>
+                <p class="requirement" id="number-requirement"><span class="icon">✗</span> <?= $texts["pwd-number"]?>
+                </p>
             </div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAAzcQ_AbxIt5mw3W" data-theme="light"></div>
             <button type="submit" class="submit" id="submit" data-loading-text="Loading...">
                 <span class="button-text"><?= $texts["sign-up"]?></span>
                 <span class="spinner"></span>
@@ -249,7 +253,7 @@ if (isset($_GET["newemail"]) && !!filter_var($_GET["newemail"], FILTER_VALIDATE_
             const form = document.getElementById("signupForm");
             const submitButton = document.getElementById("submit");
 
-            form.addEventListener("submit", function (event) {
+            form.addEventListener("submit", function () {
                 // Show loading state
                 submitButton.disabled = true;
                 submitButton.classList.add('loading');
