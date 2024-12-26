@@ -15,7 +15,7 @@ function startSession() : void {
         'lifetime' => 60 * 60 * 24,
         'domain' => '[REDACTED_LOCAL_IP]',  //Change to public domain
         'path' => '/',
-        'secure' => false,     //Change to true, when in production
+        'secure' => true,     //Made self-signed ssl cert for local ip
         'httponly' => true,
         'samesite' => 'Strict'    //Type of third-party use of cookies (I think xd)
     ]);
