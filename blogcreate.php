@@ -29,137 +29,195 @@ $data = getLocationData(getUserIP())
     <title>Blog create</title>
 </head>
 <body>
-    <div class="container">
-        <form action="includes/blogcreate1.inc.php" method="post">
-            <input type="hidden" name="long" id="long" value="<?= $data["lng"] ?? 19.045900?>">
-            <input type="hidden" name="lat" id="lat" value="<?= $data["lat"] ?? 47.507690?>">
-            <div class="item" id="output"></div>
-            <div class="button_div">
-                <button type="button" onclick="generateCode()" class="newitem">New Item</button>
-            </div>
-            <div id="map"></div>
-            <div class="button_div">
-                <button type="submit" class="sumbit">Submit</button>
-            </div>
-        </form>
-    </div>
+<div class="container">
+    <form id="form" action="includes/blogcreate1.inc.php" method="post">
+        <input type="hidden" name="long" id="long" value="<?= $data["lng"] ?? 19.045900 ?>">
+        <input type="hidden" name="lat" id="lat" value="<?= $data["lat"] ?? 47.507690 ?>">
+        <div class="item" id="output"></div>
+        <div class="button_div">
+            <button type="button" onclick="generateCode()" class="newitem">New Item</button>
+        </div>
+        <div id="map"></div>
+        <div class="button_div">
+            <button type="submit" class="sumbit">Submit</button>
+        </div>
+    </form>
+</div>
 
-    <script>
-        let map, marker;
-        const longInp = document.getElementById("long");
-        const latInp = document.getElementById("lat");
+<!--suppress JSValidateTypes -->
+<script>
+    let map, marker;
+    const longInp = document.getElementById("long");
+    const latInp = document.getElementById("lat");
 
-        async function initMap() {
-            const initialLocation = {
-                lat: parseFloat(latInp.value),
-                lng: parseFloat(longInp.value)
-            };
+    async function initMap() {
+        const initialLocation = {
+            lat: parseFloat(latInp.value),
+            lng: parseFloat(longInp.value)
+        };
 
-            const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
+        const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
 
-            // Initialize the map
-            map = new google.maps.Map(document.getElementById("map"), {
-                mapId: "1",
-                zoom: 12,
-                center: initialLocation,
-            });
+        // Initialize the map
+        map = new google.maps.Map(document.getElementById("map"), {
+            mapId: "1",
+            zoom: 12,
+            center: initialLocation,
+        });
 
-            getLocation()
+        getLocation()
 
-            // Add a marker
-            createNewMarker(AdvancedMarkerElement, initialLocation.lat, initialLocation.lng);
+        // Add a marker
+        createNewMarker(AdvancedMarkerElement, initialLocation.lat, initialLocation.lng);
 
-            // Add a click listener to add markers
-            map.addListener('click', function (event) {
-                createNewMarker(AdvancedMarkerElement, event.latLng.lat(), event.latLng.lng());
-            });
+        // Add a click listener to add markers
+        map.addListener("click", (event) => {
+            createNewMarker(AdvancedMarkerElement, event.latLng.lat(), event.latLng.lng());
+        });
+    }
+
+    function getLocation() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    latInp.value = position.coords.latitude;
+                    longInp.value = position.coords.longitude;
+                }
+            );
+        }
+    }
+
+    function createNewMarker(AdvancedMarkerElement, lat, lng) {
+        // Remove the old marker
+        if (marker) {
+            marker.map = null; // This removes the marker from the map
         }
 
-        function getLocation() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        latInp.value = position.coords.latitude;
-                        longInp.value = position.coords.longitude;
-                    }
-                );
-            }
-        }
+        // Create a new marker
+        marker = new AdvancedMarkerElement({
+            position: {lat, lng},
+            map: map,
+            title: "Your Location",
+        });
 
+        // Update hidden input values
+        longInp.value = lng;
+        latInp.value = lat;
+    }
 
-        function createNewMarker(AdvancedMarkerElement, lat, lng) {
+    function generateCode() {
+        const output = document.getElementById('output');
 
-            // Remove the old marker
-            if (marker) {
-                marker.map = null; // This removes the marker from the map
-            }
+        // Create the new elements
+        const div = document.createElement('div');
+        div.className = "item_sor";
 
-            // Create a new marker
-            marker = new AdvancedMarkerElement({
-                position: {lat, lng},
-                map: map,
-                title: "Your Location",
-            });
-
-            // Update hidden input values
-            longInp.value = lng;
-            latInp.value = lat;
-        }
-
-        function generateCode() {
-            const output = document.getElementById('output');
-
-            // Create the new elements
-            const div = document.createElement('div');
-            div.className = "item_sor";
-
-            const select = document.createElement('select');
-            select.name = "item[]";
-            select.innerHTML = `
-            <option value="item"> ITEM </option>
-            <option value="1"> PET PALACK (50 ft) </option>
-            <option value="2">ÜVEG (50 ft)</option>
+        const select = document.createElement('select');
+        select.name = "item[]";
+        select.innerHTML = `
+            <option value=""> Choose an item </option>
+            <option value="1"> PET PALACK </option>
+            <option value="2"> ÜVEG </option>
+            <option value="3"> ALUMÍNIUM </option>
         `;
 
-            const counterInput = document.createElement('input');
-            counterInput.type = 'number';
-            counterInput.name = 'number[]';
-            counterInput.value = 0;
-            counterInput.readOnly = true;
+        const priceInput = document.createElement("input");
+        priceInput.type = "number";
+        priceInput.name = "price[]";
+        priceInput.value = 50; // Default value
+        priceInput.min = 5;
+        priceInput.max = 300;
+        priceInput.step = 5;
+        priceInput.readOnly = false;
+        priceInput.addEventListener('keydown', function (event) {
+            event.preventDefault()
+        });
 
-            const incrementButton = document.createElement('button');
-            incrementButton.textContent = '+';
-            incrementButton.type = 'button';
-            incrementButton.onclick = function () {
-                counterInput.value = parseInt(counterInput.value) + 1;
-            };
+        const counterInput = document.createElement("input");
+        counterInput.type = "number";
+        counterInput.name = "number[]";
+        counterInput.value = 1; // Default value
+        counterInput.min = 1;
+        counterInput.step = 1;
+        counterInput.readOnly = false;
+        counterInput.addEventListener('keydown', function (event) {
+            event.preventDefault()
+        });
 
-            const decrementButton = document.createElement('button');
-            decrementButton.textContent = '-';
-            decrementButton.type = 'button';
-            decrementButton.onclick = function () {
-                counterInput.value = Math.max(0, parseInt(counterInput.value) - 1);
-            };
+        const incrementButton = document.createElement("button");
+        incrementButton.textContent = "+";
+        incrementButton.type = "button";
+        incrementButton.onclick = function () {
+            counterInput.value = parseInt(counterInput.value) + 1;
+        };
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.type = 'button';
-            deleteButton.onclick = function () {
-                output.removeChild(div);
-            };
+        const decrementButton = document.createElement("button");
+        decrementButton.textContent = "-";
+        decrementButton.type = "button";
+        decrementButton.onclick = function () {
+            counterInput.value = Math.max(1, parseInt(counterInput.value) - 1);
+        };
 
-            // Append elements to the div
-            div.appendChild(select);
-            div.appendChild(counterInput);
-            div.appendChild(incrementButton);
-            div.appendChild(decrementButton);
-            div.appendChild(deleteButton);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.type = "button";
+        deleteButton.name = "delete"
+        deleteButton.onclick = function () {
+            if (document.querySelectorAll(".item_sor").length > 1) {
+                output.removeChild(div); // Remove the current div
+            } else {
+                alert("You must keep at least one item.");
+            }
+        };
 
-            // Append the div to the output container
-            output.appendChild(div);
+        // Append elements to the div
+        div.appendChild(select);
+        div.appendChild(priceInput);
+        div.appendChild(counterInput);
+        div.appendChild(incrementButton);
+        div.appendChild(decrementButton);
+        div.appendChild(deleteButton);
+
+        // Append the div to the output container
+        output.appendChild(div);
+    }
+
+    generateCode()
+
+    // Form validation
+    const form = document.getElementById("form");
+    form.addEventListener("submit", function (event) {
+        const items = document.querySelectorAll("select[name='item[]']");
+        const numbers = document.querySelectorAll("input[name='number[]']");
+        const prices = document.querySelectorAll("input[name='price[]']");
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            const number = numbers[i];
+            const price = prices[i];
+
+            if (item.value === "") {
+                // Maybe some css highlighting here as well (eg: item.class = ...)
+                alert("Please choose an item for all rows.");
+                event.preventDefault();
+                return;
+            }
+
+            if (parseInt(number.value) < 1) {
+                // Maybe some css highlighting here as well (eg: number.class = ...)
+                alert("Please enter a valid number of items (at least 1).");
+                event.preventDefault();
+                return;
+            }
+
+            if (parseFloat(price.value) < 5 || parseFloat(price.value) > 300) {
+                // Maybe some css highlighting here as well (eg: price.class = ...)
+                alert("Please enter a valid price (greater than 0 and less than 300).");
+                event.preventDefault();
+                return;
+            }
         }
-
-        generateCode()
-    </script>
+    });
+</script>
 </body>
 </html>

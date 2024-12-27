@@ -1,14 +1,11 @@
 <?php
 require_once "includes/config.php";
+require "includes/blogdiv.php";
 
-
-// Check if the user is logged in by verifying session variables
 if (!isset($_SESSION['logged-in'])) {
     header("Location: .");
     exit();
 }
-require "includes/blogdiv.php";
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,20 +22,15 @@ require "includes/blogdiv.php";
         <img class="logo" src="../favicon.ico" alt="logo">
         <h1>Rematch</h1>
         <button><a href="logout.php">Logout</a></button>
-
     </div>
 </nav>
-<?php
-
-            echo "Welcome, " . htmlspecialchars($_SESSION['username']) . "!";
-            ?>
            <div id="blogspage">
                <?php
 
-               for ($i = 1; $i <= blogcount(); $i++) {
+               for ($i = 1; $i <= entryCount(); $i++) {
                    ?>
                    <div class="blog">
-                       User: <?= getusername($i); ?>
+                       User: <?= getUsername($i); ?>
                        <br>
                        Amount: <?= quantity($i); ?>
                        <br>
@@ -50,8 +42,5 @@ require "includes/blogdiv.php";
            </div>
 
     <div class="circle"><a href="blogcreate.php" class="plus">+</a></div>
-    
-
 </body>
-
 </html>
