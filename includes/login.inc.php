@@ -24,17 +24,16 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !isset($_SESSION["userid"])) {
     }
     if(password_verify($pwd, $data["pwd"])){
         if ($data["verified"]==1){
-            if (checkRateLimit(getUserIP(), "login")) {
+            if (checkRateLimit("login")) {
 
-                $_SESSION['userid'] =  $data["id"];
+                $_SESSION['userid'] = $data["id"];
                 if (enabled2fa($data["id"])) {
                     header("Location: " . str_replace("/var/www/html", "", __DIR__) . "/../2fa.php");
                 } else {
                     loginSuccessful($data);
                     exit();
                 }
-            }
-            die("You have been rate limited.");
+            } else die("You have been rate limited.");
         } else {
             $_SESSION["login-error"]= "email-not-verified";
             $_SESSION["username"] = $username;
@@ -91,28 +90,6 @@ function setSessionData ($userid) : void {
     $_SESSION['lastname'] = $data["lastname"];
     $_SESSION['email'] = $data["email"];
     $_SESSION['username'] = $data["username"];
-}
-
-function checkRateLimit($ip, $action, $limit = 10, $timeframe = 300) : bool {
-    $query = "SELECT COUNT(*) as attempts FROM rate_limits 
-              WHERE ip = :ip AND action = :action 
-              AND timestamp > DATE_SUB(NOW(), INTERVAL :timeframe SECOND)";
-
-    $attempts = returnQuery($query, [
-        ':ip' => $ip,
-        ':action' => $action,
-        ':timeframe' => $timeframe
-    ])['attempts'];
-
-    if ($attempts >= $limit) {
-        return false;
-    }
-
-    $query = "INSERT INTO rate_limits (ip, action, timestamp) 
-              VALUES (:ip, :action, NOW())";
-    doQuery($query, [':ip' => $ip, ':action' => $action]);
-
-    return true;
 }
 
 function enabled2fa($userid): bool

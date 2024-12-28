@@ -12,6 +12,7 @@ if (!isset($_SESSION['logged-in'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!checkRateLimit("signup")) die("You have been rate limited");
     if (!validateCSRFToken($_POST["csrf_token"])) die("Invalid CSRF Token");
     $fname = $_POST['firstname'];
     $lname = $_POST['lastname'] ?? "";

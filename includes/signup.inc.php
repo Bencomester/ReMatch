@@ -1,6 +1,6 @@
 <?php
-if(session_status() === PHP_SESSION_NONE) session_start();
 
+require_once "config.php";
 require_once "signup_model.inc.php";
 require_once "signup_contr.inc.php";
 require_once 'security.php';
@@ -9,7 +9,8 @@ if (isset($_GET['lang'])) $_SESSION['lang'] = $_GET['lang'];
 $lang = $_SESSION['lang'] ?? 'en';
 $texts = include "../lang/$lang.php";
 
-if ($_SERVER["REQUEST_METHOD"]==="POST"){
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!checkRateLimit("signup")) die("You have been rate limited");
     if (!validateCSRFToken($_POST["csrf_token"])) die("Invalid CSRF Token");
     $turnstileResponse = $_POST['cf-turnstile-response'];
     if (!cloudflareTurnstile($turnstileResponse)) die("Verification failed");

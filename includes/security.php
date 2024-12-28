@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . "/dhb.inc.php";
+require_once __DIR__ . "/geoip.php";
+
 function generateCSRFToken()
 {
     if (empty($_SESSION['csrf_token'])) {
@@ -35,4 +38,28 @@ function cloudflareTurnstile($turnstileResponse): bool
 
     $responseKeys = json_decode($response, true);
     return $responseKeys['success'];
+}
+
+function checkRateLimit($action, $ip = "", $limit = 10, $timeframe = 300): bool
+{
+    $ip = $ip == "" ? getUserIP() : $ip;
+    $query = "SELECT COUNT(*) as attempts FROM rate_limits 
+              WHERE ip = :ip AND action = :action 
+              AND timestamp > DATE_SUB(NOW(), INTERVAL :timeframe SECOND)";
+
+    $attempts = returnQuery($query, [
+        ':ip' => $ip,
+        ':action' => $action,
+        ':timeframe' => $timeframe
+    ])['attempts'];
+
+    if ($attempts >= $limit) {
+        return false;
+    }
+
+    $query = "INSERT INTO rate_limits (ip, action, timestamp) 
+              VALUES (:ip, :action, NOW())";
+    doQuery($query, [':ip' => $ip, ':action' => $action]);
+
+    return true;
 }
