@@ -49,7 +49,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !isset($_SESSION["userid"])) {
 
 function loginSuccessful($data) : void {
     $userid = $data["id"];
-    resetSessionAndCookieTime();
     date_default_timezone_set("UTC");
     $date = date("Y-m-d H:i:s");
     $query="INSERT INTO login (userid, date) values (:id, :date);";
@@ -114,22 +113,6 @@ function checkRateLimit($ip, $action, $limit = 10, $timeframe = 300) : bool {
     doQuery($query, [':ip' => $ip, ':action' => $action]);
 
     return true;
-}
-
-function resetSessionAndCookieTime() : void
-{
-    $session = $_SESSION;
-
-    if (ini_get("session.use_cookies")) {
-        if (!session_name()) die("Session name is invalid.");
-        $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 3600, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
-    }
-
-    session_destroy();
-    startSession();
-    /** @noinspection PhpConditionAlreadyCheckedInspection */
-    $_SESSION = $session;
 }
 
 function enabled2fa($userid): bool
