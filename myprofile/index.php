@@ -5,12 +5,14 @@ if (!isset($_SESSION['logged-in'])) {
     header("Location: ..");
     exit();
 }
+require_once __DIR__ . "/../includes/2fa.inc.php";
 require_once("userdata.php");
 include("../lang/index.php");
 if (isset($_GET['lang'])) $_SESSION['lang'] = $_GET['lang'];
 $lang = $_SESSION['lang'] ?? 'en';
 $texts = include "../lang/$lang.php";
 
+$tfa = (is2faOnAndEnabled() ?? 0) == 1;
 $data = getData($_SESSION['userid'])
 ?>
 
@@ -37,14 +39,15 @@ $data = getData($_SESSION['userid'])
     </div>
 
     <!-- User Info -->
-    <h2 class="user-name"><?=$data["username"]?></h2>
-    <p class="user-email"><?=$data["email"]?></p>
-    <?= empty($data["phone"]) ? "" : '<p class="user-email">' . $data["phone"] . '</p>'?>
+    <h2 class="user-name"><?= $data["username"] ?></h2>
+    <p class="user-email"><?= $data["email"] ?></p>
+    <?= empty($data["phone"]) ? "" : '<p class="user-email">' . $data["phone"] . '</p>' ?>
 
     <!-- Profile Actions -->
     <div class="profile-actions">
         <button class="btn edit-btn" onclick="window.location.href='edit.php';"><?= $texts["edit-profile"] ?></button>
-        <button class="btn edit-btn" onclick="window.location.href='../2fa.php';">Enable 2fa</button>
+        <button class="btn edit-btn"
+                onclick="window.location.href='<?= $tfa ? "../2fa.php?disable=true" : "../2fa.php" ?>';"><?= $tfa ? "Disable 2fa" : "Enable 2fa" ?></button>
         <button class="btn logout-btn" onclick="window.location.href='../logout.php';"><?= $texts["log-out"] ?></button>
     </div>
 </div>

@@ -1,32 +1,30 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Endroid\QrCode\Exception\ValidationException;
-use OTPHP\TOTP;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
-use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Exception\ValidationException;
 use Endroid\QrCode\Label\Font\OpenSans;
+use Endroid\QrCode\Label\LabelAlignment;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
+use OTPHP\TOTP;
 
 require_once __DIR__ . "/config.php";
 require_once __DIR__ . "/dhb.inc.php";
 require_once __DIR__ . "/login.inc.php";
 
 if ($_SERVER["REQUEST_METHOD"]=="POST") {
-    $enabled = is2faOnAndEnabled();
-    if (empty($enabled)) {
-        header("Location: ../myprofile");
-    } else $enabled = $enabled["enabled"];
+    $enabled = (is2faOnAndEnabled() ?? 0) == 1;
+    error_log($enabled);
     $otp = str_replace(" ", "", $_POST["otp"]);
-    $error = !run2tfa($otp, $enabled == 0);
+    $error = !run2tfa($otp, !$enabled);
     if ($error) {
         header("Location: ../2fa.php?enable=failure");
         exit();
     } else {
-        if ($enabled == 1) {
+        if ($enabled) {
             loginSuccessful(useridQuery($_SESSION["userid"]));
             exit();
         }
@@ -34,11 +32,19 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     }
 }
 
-function is2faOnAndEnabled() {
-    return returnQuery("SELECT enabled FROM 2fa WHERE userid = :userid", ["userid" => $_SESSION["userid"]]) ?? null;
+function is2faOnAndEnabled()
+{
+    $enabled = returnQuery("SELECT enabled FROM 2fa WHERE userid = :userid", ["userid" => $_SESSION["userid"]]);
+    return empty($enabled) ? null : $enabled["enabled"];
 }
 
-function create2fa() : string
+function disable2fa(): void
+{
+    doQuery("UPDATE 2fa SET enabled = 0 WHERE :userid = userid;", ["userid" => $_SESSION["userid"]]);
+    header("Location: myprofile");
+}
+
+function create2fa(): string
 {
     // Generate a TOTP instance
     $totp = TOTP::create();
@@ -53,13 +59,23 @@ function create2fa() : string
     // Generate a QR code URL for the user to scan
     $qrCodeUrl = $totp->getProvisioningUri();
 
-    doQuery("INSERT INTO 2fa (userid, secret, enabled) values (:userid, :secret, 0)", ["userid" => $_SESSION["userid"], "secret" => $secret]);
+    doQuery("INSERT INTO 2fa (userid, secret, enabled, timestamp) values (:userid, :secret, 0, NOW())", ["userid" => $_SESSION["userid"], "secret" => $secret]);
 
     // Display the QR code using a service like Google Chart API
     return base64_encode(createQR($qrCodeUrl)->getString());
 }
 
-function verify2fa($userOtp) : bool {
+function getSecretQR(): string
+{
+    $secret = returnQuery("SELECT secret FROM 2fa WHERE userid = :userid", ["userid" => $_SESSION["userid"]])["secret"];
+    $totp = TOTP::create($secret);
+    $totp->setLabel('ReMatch');
+    $totp->setIssuer('rematch.com');
+    return base64_encode(createQR($totp->getProvisioningUri())->getString());
+}
+
+function verify2fa($userOtp): bool
+{
     $secret = returnQuery("SELECT secret FROM 2fa WHERE userid = :userid", ["userid" => $_SESSION["userid"]])["secret"];
 
     $totp = TOTP::create($secret);

@@ -14,14 +14,16 @@ $lang = $_SESSION['lang'] ?? 'en';
 $texts = include __DIR__ . "/lang/$lang.php";
 
 $enabled = is2faOnAndEnabled();
-if (empty($enabled)) {
+if (!isset($enabled)) {
     $code = create2fa();
     $enabled = 0;
-} else $enabled = $enabled["enabled"];
+} else if ($enabled == 0) $code = getSecretQR();
+
+if (($_SESSION["logged-in"] ?? false) && $enabled == 1 && $_GET["disable"] ?? "" == true) disable2fa();
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['lang'] ?? 'en';?>">
+<html lang="<?= $_SESSION['lang'] ?? 'en'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
