@@ -27,14 +27,16 @@ if (!isset($_SESSION['logged-in'])) {
            <div id="blogspage">
                <?php
 
-               for ($i = 1; $i <= entryCount(); $i++) {
+               foreach (getEntriesSearchAndSort() as $item) {
                    ?>
                    <div class="blog">
-                       User: <?= getUsername($i); ?>
+                       User: <?= $item["username"] ?>
                        <br>
-                       Amount: <?= quantity($i); ?>
+                       Amount: <?= $item["amount"] ?>
                        <br>
-                       Total: <?= price($i); ?>Ft
+                       Total: <?= $item["price"] ?>Ft
+                       <br>
+                       Created: <?= date("Y-m-d", $item["time"]) ?>
                    </div>
                    <?php
                }
