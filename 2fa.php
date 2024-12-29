@@ -19,7 +19,7 @@ if (!isset($enabled)) {
     $enabled = 0;
 } else if ($enabled == 0) $code = getSecretQR();
 
-if (($_SESSION["logged-in"] ?? false) && $enabled == 1 && $_GET["disable"] ?? "" == true) disable2fa();
+if (($_SESSION["logged-in"] ?? false) && $enabled == 1 && isset($_GET["disable"]) && $_GET["disable"] ?? "" == true) disable2fa();
 ?>
 
 <!DOCTYPE html>

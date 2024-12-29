@@ -8,7 +8,6 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 
 require_once "tokenHandler.php";
-require_once "../includes/dhb.inc.php";
 require_once '../myprofile/userdata.php';
 $en = include "../lang/en.php";
 

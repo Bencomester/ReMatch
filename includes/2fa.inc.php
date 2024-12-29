@@ -17,7 +17,6 @@ require_once __DIR__ . "/login.inc.php";
 
 if ($_SERVER["REQUEST_METHOD"]=="POST") {
     $enabled = (is2faOnAndEnabled() ?? 0) == 1;
-    error_log($enabled);
     $otp = str_replace(" ", "", $_POST["otp"]);
     $error = !run2tfa($otp, !$enabled);
     if ($error) {
@@ -59,7 +58,7 @@ function create2fa(): string
     // Generate a QR code URL for the user to scan
     $qrCodeUrl = $totp->getProvisioningUri();
 
-    doQuery("INSERT INTO 2fa (userid, secret, enabled, timestamp) values (:userid, :secret, 0, NOW())", ["userid" => $_SESSION["userid"], "secret" => $secret]);
+    doQuery("INSERT INTO 2fa (userid, secret, enabled, timestamp) values (:userid, :secret, 0, unix_timestamp())", ["userid" => $_SESSION["userid"], "secret" => $secret]);
 
     // Display the QR code using a service like Google Chart API
     return base64_encode(createQR($qrCodeUrl)->getString());
