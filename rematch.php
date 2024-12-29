@@ -1,6 +1,6 @@
 <?php
 require_once "includes/config.php";
-require "includes/blogdiv.php";
+require "includes/entry.inc.php";
 
 if (!isset($_SESSION['logged-in'])) {
     header("Location: .");

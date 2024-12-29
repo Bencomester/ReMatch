@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 
 require_once "tokenHandler.php";
-require_once "../includes/blogdiv.php";
+require_once "../includes/entry.inc.php";
 $en = include "../lang/en.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $lat = $data["lat"] ?? 0;
         $lon = $data["lon"] ?? 0;
 
-        $code = "auth-success";
+        $code = "action-successful";
         $id = $decodedJWT->userid;
         echo json_encode(["status" => "success", "code" => $code, "message" => $en[$code],
             "entries" => getEntriesSearchAndSort($search, $sort, $desc, $limit, $lat, $lon)

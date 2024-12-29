@@ -30,7 +30,7 @@ $data = getLocationData(getUserIP())
 </head>
 <body>
 <div class="container">
-    <form id="form" action="includes/blogcreate1.inc.php" method="post">
+    <form id="form" action="includes/entry.inc.php" method="post">
         <input type="hidden" name="long" id="long" value="<?= $data["lng"] ?? 19.045900 ?>">
         <input type="hidden" name="lat" id="lat" value="<?= $data["lat"] ?? 47.507690 ?>">
         <div class="item" id="output"></div>
