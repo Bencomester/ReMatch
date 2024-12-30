@@ -2,6 +2,17 @@
 require "dhb.inc.php";
 require_once "config.php";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $items = $_POST["item"];
+    $number = $_POST["number"];
+    $price = $_POST["price"];
+    $lon = $_POST["long"];
+    $lat = $_POST["lat"];
+    createEntry($items, $price, $number, $lon, $lat);
+    header("Location: ../rematch.php?create=success");
+    exit();
+}
+
 function createEntry($item, $price, $amount, $lon, $lat): void
 {
     $id = generateId();
@@ -26,17 +37,6 @@ function generateId(): int
         $id++;
     }
     return $id;
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $items = $_POST["item"];
-    $number = $_POST["number"];
-    $price = $_POST["price"];
-    $lon = $_POST["long"];
-    $lat = $_POST["lat"];
-    createEntry($items, $price, $number, $lon, $lat);
-    header("Location: ../rematch.php?create=success");
-    exit();
 }
 
 function getEntriesSearchAndSort($search = "", $sort = "distance", bool $descending = false, int $limit = 50, float $userLat = 0, float $userLon = 0): array
@@ -77,11 +77,83 @@ function getEntriesSearchAndSort($search = "", $sort = "distance", bool $descend
         ORDER BY 
             $sort $order
         LIMIT $limit
-    ";
+    ;";
 
     return returnQueryAll($query, [
         ":search" => "%$search%", // Include '%' for partial matching
         ":userLat" => $userLat, // User's latitude
         ":userLon" => $userLon, // User's longitude
     ]);
+}
+
+function getMyEntries(int $userid): array
+{
+    $query = "
+        SELECT 
+            username, 
+            SUM(number) AS amount, 
+            SUM(price * number) AS price,
+            timestamp AS time
+        FROM 
+            users, blog, blogs 
+        WHERE 
+            blog.blog_id = blogs.blog_id 
+            AND userid = users.id
+            AND userid = :userid
+        GROUP BY 
+            blog.blog_id
+        ORDER BY 
+            'time' DESC
+    ;";
+
+    return returnQueryAll($query, [":userid" => $userid]);
+}
+
+function getEntryDetails(int $id): array
+{
+    $query = "
+        SELECT 
+            price, item, number AS amount
+        FROM 
+            users, blog, blogs 
+        WHERE 
+            blog.blog_id = blogs.blog_id 
+            AND userid = users.id
+            AND blogs.blog_id = :id
+        ORDER BY
+            item DESC,
+            amount DESC,
+            price DESC
+    ;";
+
+    return returnQueryAll($query, [":id" => $id]);
+}
+
+function editEntry(int $id, int $userid, array $items, int $lon = 0, int $lat = 0): bool
+{
+    $query = "SELECT userid FROM blog WHERE blog_id = :id;";
+    if (returnQuery($query, ["id" => $id])["userid"] != $userid) return false;
+
+    doQuery("DELETE FROM blogs WHERE blog_id = :id", ["id" => $id]);
+
+    for ($i = 0; $i < count($items); $i++) {
+        $query = "INSERT INTO blogs (item, number, price, blog_id) values (:items, :number, :price, :blog_id);";
+        $param = [":items" => $items[$i]["item"], ":number" => $items[$i]["amount"], ":price" => $items[$i]["price"], ":blog_id" => $id];
+        doQuery($query, $param);
+    }
+
+    if ($lon == 0 && $lat == 0) return true;
+    $query = "UPDATE blog SET lon = :lon, lat = :lat WHERE blog_id = :id;";
+    $param = [":id" => $id, ":lon" => $lon, ":lat" => $lat];
+    doQuery($query, $param);
+    return true;
+}
+
+function deleteEntry(int $id, int $userid): bool
+{
+    $query = "SELECT userid FROM blog WHERE blog_id = :id;";
+    if (returnQuery($query, ["id" => $id])["userid"] != $userid) return false;
+    doQuery("DELETE FROM blogs WHERE blog_id = :id", ["id" => $id]);
+    doQuery("DELETE FROM blog WHERE blog_id = :id", ["id" => $id]);
+    return true;
 }

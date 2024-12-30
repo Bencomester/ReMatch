@@ -6,9 +6,10 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
-require_once "../includes/entry.inc.php";
-require_once "tokenHandler.php";
-$en = include "../lang/en.php";
+require_once "../../includes/entry.inc.php";
+require_once "../tokenHandler.php";
+$en = include "../../lang/en.php";
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $decodedJWT = authenticateJWT();
     if (!empty($decodedJWT)) {
@@ -16,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $lat = $data["lat"];
         $lon = $data["lon"];
-        $list = $data["list"];
+        $list = $data["items"];
         $item = [];
         $price = [];
         $amount = [];

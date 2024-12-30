@@ -7,9 +7,9 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 
-require_once "tokenHandler.php";
-require_once "../includes/entry.inc.php";
-$en = include "../lang/en.php";
+require_once "../tokenHandler.php";
+require_once "../../includes/entry.inc.php";
+$en = include "../../lang/en.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $decodedJWT = authenticateJWT();

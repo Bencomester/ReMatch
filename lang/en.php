@@ -74,4 +74,5 @@ return [
     "verify-2fa" => "Verify 2fa",
     "submit" => "Submit",
     "action-successful" => "Action performed successfully",
+    "no-perm" => "You don't have permission to perform this acton",
 ];
