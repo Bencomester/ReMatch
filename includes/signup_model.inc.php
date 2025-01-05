@@ -18,18 +18,23 @@ function get_email(string $email)
 function get_phone(string $phone)
 {
     $query="SELECT phone, id FROM users WHERE phone = :phone;";
-    return returnQuery($query,[":phone"=>$phone]);
+    return returnQuery($query, [":phone" => $phone]);
 }
 
-function set_user(string $username, string $pwd, string $email, string $phone, string $firstname, string $lastname) : void{
-    $query="INSERT INTO users (username, email, phone, pwd, firstname, lastname, pwdDate, verified) values (:username, :email, :phone, :pwd, :firstname, :lastname, :date, 0);";
+function set_user(string $username, string $pwd, string $email, string $phone, string $firstname, string $lastname): void
+{
+    $query = "INSERT INTO users (username, email, phone, pwd, firstname, lastname, pwdDate, verified) values (:username, :email, :phone, :pwd, :firstname, :lastname, :date, 0);";
+    $hashedPwd = hashPassword($pwd);
+    date_default_timezone_set("UTC");
+    $values = ["username" => $username, "email" => $email, "phone" => $phone, "pwd" => $hashedPwd, "firstname" => $firstname, "lastname" => $lastname, "date" => date("Y-m-d H:i:s")];
+    doQuery($query, $values);
+}
 
-    $options =[
-        'cost' => 12
+function hashPassword($pwd, $cost = 12): string
+{
+    $options = [
+        'cost' => $cost
     ];
 
-    $hashedPwd =password_hash($pwd, PASSWORD_BCRYPT, $options);
-    date_default_timezone_set("UTC");
-    $values = ["username"=>$username, "email"=>$email, "phone"=>$phone, "pwd"=>$hashedPwd, "firstname"=>$firstname, "lastname"=>$lastname, "date"=>date("Y-m-d H:i:s")];
-    doQuery($query, $values);
+    return password_hash($pwd, PASSWORD_BCRYPT, $options);
 }

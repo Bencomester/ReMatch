@@ -75,4 +75,6 @@ return [
     "submit" => "Submit",
     "action-successful" => "Action performed successfully",
     "no-perm" => "You don't have permission to perform this acton",
+    "edit-success" => "Your information was successfully modified",
+    "file-error" => "There was something wrong with your uploaded file",
 ];

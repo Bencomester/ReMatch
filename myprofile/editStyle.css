@@ -75,7 +75,8 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="tel"],
-input[type="file"] {
+input[type="file"],
+input[type="password"] {
     padding: 10px;
     border: 1px solid #C1C8E4;
     border-radius: 5px;

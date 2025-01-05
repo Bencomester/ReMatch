@@ -17,13 +17,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fname = $_POST['firstname'];
     $lname = $_POST['lastname'] ?? "";
     $username = $_POST['username'];
-    $email = $_POST['email'];
+    $email = strtolower($_POST['email']);
     $phone = $_POST['telephone'] ?? "";
     $id = $_SESSION["userid"];
 
     $errors = [];
 
-    $phpFileUploadErrors = [
+    $phpFileUploadErrors = [                                        // TODO: Create codes for each one and add to language file
         0 => 'There is no error, the file uploaded with success',
         1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         2 => 'file-error-limit',
@@ -39,36 +39,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_FILES["profile-picture"])) {
         if (($_FILES["profile-picture"]["error"] ?? 0) == 0) {
             $code = handlePicture($_FILES["profile-picture"]);
-            if ($code != 0) $errors["file"] = $code;
+            if ($code != 0) $errors[] = $code;
         } else {
-            if ($_FILES["profile-picture"]["error"] != 4) $errors["file"] = $phpFileUploadErrors[$_FILES["profile-picture"]["error"]];
+            // if ($_FILES["profile-picture"]["error"] != 4) $errors[] = $phpFileUploadErrors[$_FILES["profile-picture"]["error"]];
+            if ($_FILES["profile-picture"]["error"] != 4) $errors[] = "file-error";
         }
     }
+    $pwd = $_POST["pwd"] ?? "";
+    if ($pwd != $_POST["pwd2"]) $errors[] = "password-do-not-match";
+    $errors = array_merge($errors, getErrors($id, $email, $username, $phone, $pwd));
 
-    if (is_email_invalid($email)) $errors["email"] = "invalid-email";
-    if (is_username_taken($username, $id)) $errors["username"] = "username-taken";
-    if (is_email_taken($email, $id)) $errors["email"] = "email-taken";
-    if (is_username_too_short($username)) $errors["username"] = "username-too-short";
-    if (is_phone_invalid($phone)) $errors["phone"] = "invalid-phone";
-    if (is_phone_taken($phone, $id)) $errors["phone"] = "phone-taken";
-
-    if ($errors) {
+    if (!empty($errors)) {
         $_SESSION["edit-error"] = $errors;
         header("Location: edit.php");
         die();
     }
 
+    updateProfileDetails($id, $email, $username, $phone, $fname, $lname, $pwd);
+
+    header("Location: edit.php?success=true");
+} else {
+    header("Location: .");
+}
+
+function getErrors($id, $email, $username, $phone, $password): array
+{
+    $errors = [];
+    if ($password != "" && is_password_strong($password) != "Strong") $errors[] = is_password_strong($password);
+    if (is_email_invalid($email)) $errors[] = "invalid-email";
+    if (is_username_taken($username, $id)) $errors[] = "username-taken";
+    if (is_email_taken($email, $id)) $errors[] = "email-taken";
+    if (is_username_too_short($username)) $errors[] = "username-too-short";
+    if (is_phone_invalid($phone)) $errors[] = "invalid-phone";
+    if (is_phone_taken($phone, $id)) $errors[] = "phone-taken";
+    return $errors;
+}
+
+function updateProfileDetails($id, $email, $username, $phone, $fname, $lname, $password): void
+{
     $query = "SELECT email FROM users WHERE id = :userid";
     $oldEmail = returnQuery($query, [":userid" => $id])["email"];
     if ($oldEmail != $email) sendEmailAddressChange($email, $username, $id);
 
     $query = "UPDATE users SET firstname = :fname, lastname = :lname, username = :username, phone = :phone WHERE id = :userid";
-    $params = ["fname" => $fname, "lname" => $lname, "username" => $username, "phone" => $phone, "userid" => $_SESSION["userid"]];
+    $params = ["fname" => $fname, "lname" => $lname, "username" => $username, "phone" => $phone, "userid" => $id];
     doQuery($query, $params);
 
-    header("Location: edit.php?success=true");
-} else {
-    header("Location: .");
+    if ($password != "") {
+        $query = "UPDATE users SET pwd = :pwd WHERE id = :userid";
+        $params = ["pwd" => hashPassword($password)];
+        doQuery($query, $params);
+    }
 }
 
 function sendEmailAddressChange($email, $username, $id): void
@@ -94,6 +115,59 @@ function sendEmailAddressChange($email, $username, $id): void
     sendMail($email, "Confirm e-mail address change", emailChange($username, $link));
 }
 
+function handlePictureFromBase64($base64String, $id): int
+{
+    $allowedTypes = ["image/jpeg", "image/png"];
+    $maxFileSize = 50 * 1024 * 1024; // 50MB max file size
+
+    // Decode the Base64 string and generate a temporary file
+    $decodedImage = base64_decode($base64String);
+    if ($decodedImage === false) {
+        return 2; // Invalid Base64 string
+    }
+
+    // Create a temporary file path
+    $tempFilePath = tempnam(sys_get_temp_dir(), 'pfp_');
+    file_put_contents($tempFilePath, $decodedImage);
+
+    // Detect the image type
+    $fileInfo = getimagesize($tempFilePath);
+    if ($fileInfo === false || !in_array($fileInfo['mime'], $allowedTypes)) {
+        unlink($tempFilePath); // Remove the temporary file
+        return 2; // Unsupported file type
+    }
+
+    // Validate file size
+    $fileSize = strlen($decodedImage);
+    if ($fileSize > $maxFileSize) {
+        unlink($tempFilePath);
+        return 11; // File size exceeds limit
+    }
+
+    // Generate a new unique file name (to avoid overwriting)
+    $fileExtension = pathinfo($fileInfo['mime'], PATHINFO_EXTENSION);
+    $newFileName = $id . "." . $fileExtension;
+    $uploadDir = "../pfp/";
+    $uploadFilePath = $uploadDir . $newFileName;
+
+    // Remove old files
+    $extensions = ["jpeg", "jpg", "png"];
+    foreach ($extensions as $ext) {
+        $oldFile = $uploadDir . $id . "." . $ext;
+        if (file_exists($oldFile)) unlink($oldFile);
+    }
+
+    // Move the temporary file to the upload directory
+    if (rename($tempFilePath, $uploadFilePath)) {
+        cropImageToSquare($uploadFilePath);
+        resizeImage($uploadFilePath, 150);
+        return 0; // Success
+    } else {
+        unlink($tempFilePath); // Cleanup on failure
+        return 11; // File upload error
+    }
+}
+
 function handlePicture($pfp): int
 {
     // Define allowed file types
@@ -117,10 +191,10 @@ function handlePicture($pfp): int
 
     // Validate file type and size
     if (!in_array($fileType, $allowedTypes)) {
-        echo "Error: Only JPG and PNG files are allowed.";
+        // Error: Only JPG and PNG files are allowed.;
         return 2;
     } else if ($fileSize > $maxFileSize) {
-        echo "Error: File size exceeds the 50MB limit.";
+        // Error: File size exceeds the 50MB limit.;
         return 11;
     } else {
         // Move the file from temporary folder to the target directory
@@ -134,10 +208,10 @@ function handlePicture($pfp): int
         if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
             cropImageToSquare($uploadFilePath);
             resizeImage($uploadFilePath, 150);
-            echo "File successfully uploaded to: " . $uploadFilePath;
+            // File successfully uploaded to: $uploadFilePath;
             return 0;
         } else {
-            echo "Error: There was a problem uploading the file.";
+            // Error: There was a problem uploading the file.;
             return 11;
         }
     }
@@ -165,7 +239,6 @@ function resizeImage($sourcePath, $newWidth, $newHeight = 0, $destinationPath = 
             $sourceImage = imagecreatefromgif($sourcePath);
             break;
         default:
-            echo "Unsupported image type.";
             return;
     }
 

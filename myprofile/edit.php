@@ -1,13 +1,13 @@
 <?php
 require_once '../includes/config.php';
 require_once '../includes/security.php';
+require_once "../includes/dhb.inc.php";
 // Check if the user is logged in by verifying session variables
 if (!isset($_SESSION['logged-in'])) {
     header("Location: ..");
     exit();
 }
 
-require('../includes/dhb.inc.php');
 include("../lang/index.php");
 if (isset($_GET['lang'])) $_SESSION['lang'] = $_GET['lang'];
 $lang = $_SESSION['lang'] ?? 'en';
@@ -73,9 +73,16 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
                     id="phone"
                     value="<?= $data["phone"]?>">
         </div>
+
+        <label for="pwd">New password</label>
+        <input type="password" id="pwd" name="pwd" placeholder="(unchanged)">
+
+        <label for="pwd2">Confirm new password</label>
+        <input type="password" id="pwd2" name="pwd2">
+
         <?php
         if (!empty($_SESSION["edit-error"])) {
-            echo '<div class="edit-error">' . array_values($_SESSION["edit-error"])[0] . '</div>';
+            echo '<div class="edit-error">' . $_SESSION["edit-error"] . '</div>';
             unset($_SESSION["edit-error"]);
         }
         if ($_GET["success"] ?? false) {
