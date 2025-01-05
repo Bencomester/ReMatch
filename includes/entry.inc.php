@@ -39,7 +39,7 @@ function generateId(): int
     return $id;
 }
 
-function getEntriesSearchAndSort($search = "", $sort = "distance", bool $descending = false, int $limit = 50, float $userLat = 0, float $userLon = 0): array
+function getEntriesSearchAndSort($search = "", $sort = "time", bool $descending = false, int $limit = 50, float $userLat = 0, float $userLon = 0): array
 {
     // Define allowed columns for sorting
     $allowedSortColumns = ["id", "username", "amount", "price", "time", "distance"];

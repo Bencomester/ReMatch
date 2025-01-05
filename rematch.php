@@ -37,12 +37,27 @@ if (!isset($_SESSION['logged-in'])) {
                        Total: <?= $item["price"] ?>Ft
                        <br>
                        Created: <?= date("Y-m-d", $item["time"]) ?>
+                       <br>
+                       Distance: <?= round($item["distance"], 1) // FIXME: Display only if we know the users location  ?>
+                       km
                    </div>
                    <?php
                }
                ?>
            </div>
 
-    <div class="circle"><a href="blogcreate.php" class="plus">+</a></div>
+<div class="circle"><a href="blogcreate.php" class="plus">+</a></div>
+<script>
+    function getLocation() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    let lat = position.coords.latitude;
+                    let lon = position.coords.longitude;
+                }
+            );
+        }
+    }
+</script>
 </body>
 </html>
