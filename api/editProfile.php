@@ -6,10 +6,10 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
-require_once '../includes/signup_model.inc.php';
-require_once '../includes/signup_contr.inc.php';
+require_once "../includes/userdata.inc.php";
 require_once "tokenHandler.php";
 $en = include "../lang/en.php";
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $data = json_decode(file_get_contents("php://input"), true); // Get JSON input
     $decodedJWT = authenticateJWT();
