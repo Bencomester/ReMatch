@@ -1,5 +1,6 @@
 <?php
 require_once "../includes/config.php";
+require_once "../includes/userdata.inc.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['token'] ?? '';
@@ -22,12 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data) {
         // Token is valid, update the user's password
         $email = $data['email'];
-        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-        $query = "UPDATE users SET pwd = :password, pwdDate = :date WHERE email = :email";
-        date_default_timezone_set("UTC");
-        $values = ["password" => $hashedPassword, "email" => $email, "date" => date("Y-m-d H:i:s")];
-        doQuery($query, $values);
+        $query = "SELECT id FROM users WHERE email = :email";
+        $id = returnQuery($query, ["email" => $email])["id"];
+        resetPassword($id, $newPassword);
 
         // Delete the token
         $query = "DELETE FROM password_resets WHERE email = :email";

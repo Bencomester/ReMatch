@@ -15,6 +15,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $decodedJWT = authenticateJWT();
 
     if (!empty($decodedJWT)) {
+        $errors = [];
+        if (empty($data["username"])) $errors[] = "username-cannot-be-empty";
+        if (empty($data["email"])) $errors[] = "email-cannot-be-empty";
+        if (empty($data["firstname"])) $errors[] = "firstname-cannot-be-empty";
         $username = $data["username"] ?? '';
         $email = strtolower($data["email"] ?? '');
         $telephone = $data["telephone"] ?? '';
@@ -24,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $id = $decodedJWT->userid;
         $pfp = $data["pfp"] ?? '';
 
-        $errors = getErrors($id, $email, $username, $telephone, $pwd);
+        if (empty($errors)) $errors = getErrors($id, $email, $username, $telephone, $pwd);
         if ($pfp != "") {
             $response = handlePictureFromBase64($data["pfp"], $id);
             if ($response != 0) $errors[] = "file-error";

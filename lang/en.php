@@ -77,4 +77,10 @@ return [
     "no-perm" => "You don't have permission to perform this acton",
     "edit-success" => "Your information was successfully modified",
     "file-error" => "There was something wrong with your uploaded file",
+    "username-cannot-be-empty" => "Username cannot be empty",
+    "email-cannot-be-empty" => "E-mail cannot be empty",
+    "first-name-cannot-be-empty" => "First name cannot be empty",
+    "home" => "Home",
+    "profile" => "Profile",
+    "settings" => "Settings",
 ];

@@ -27,11 +27,16 @@ function updateProfileDetails($id, $email, $username, $phone, $fname, $lname, $p
     $params = ["fname" => $fname, "lname" => $lname, "username" => $username, "phone" => $phone, "userid" => $id];
     doQuery($query, $params);
 
-    if ($password != "") {
-        $query = "UPDATE users SET pwd = :pwd WHERE id = :userid";
-        $params = ["pwd" => hashPassword($password)];
-        doQuery($query, $params);
-    }
+    resetPassword($id, $password);
+}
+
+function resetPassword(int $id, string $password): void
+{
+    $hashedPassword = hashPassword($password);
+    $query = "UPDATE users SET pwd = :password, pwdDate = :date WHERE id = :id";
+    date_default_timezone_set("UTC");
+    $values = ["password" => $hashedPassword, "id" => $id, "date" => date("Y-m-d H:i:s")];
+    doQuery($query, $values);
 }
 
 function sendEmailAddressChange($email, $username, $id): void
