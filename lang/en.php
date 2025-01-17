@@ -83,4 +83,6 @@ return [
     "home" => "Home",
     "profile" => "Profile",
     "settings" => "Settings",
+    "new-item" => "Nem Item",
+    "lang" => "en",
 ];

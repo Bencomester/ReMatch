@@ -28,19 +28,6 @@ body {
     text-align: center;
 }
 
-/* Language Dropdown in Top Right Corner */
-.language-dropdown {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 10px 15px;
-    font-size: 0.9rem;
-    z-index: 1000;
-}
-
 /* Heading Style */
 .login-container h2 {
     font-size: 1.8rem;

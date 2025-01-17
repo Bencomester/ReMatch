@@ -55,7 +55,7 @@ function loginSuccessful($data) : void {
     doQuery($query, $param);
     setSessionData($userid);
     sendMail($data["email"], "Successful login", loginEmail($data["username"], date("Y-m-d H:i:s e")));
-    header("Location: ../myprofile");
+    header("Location: ../index.php");
 }
 
 function mainPage() : void {

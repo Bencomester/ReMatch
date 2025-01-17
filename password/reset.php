@@ -1,32 +1,30 @@
 <?php
 require_once "../includes/config.php";
-require '../includes/dhb.inc.php';
-include_once '../lang/index.php';
+require_once '../includes/dhb.inc.php';
+require_once '../lang/index.php';
 $token = $_GET['token'] ?? '';
 $query = "SELECT email FROM password_resets WHERE token = :token AND expiry >= :now";
 $values = ["token" => $token, "now" => date('U')];
 $data = returnQuery($query, $values);
 
-if (isset($_GET['lang'])) $_SESSION['lang'] = $_GET['lang'];
-$lang = $_SESSION['lang'] ?? 'en';
-$texts = include "../lang/$lang.php";
+$texts = initLang();
 $error = $_SESSION['reset-error'];
 if (empty($data) && !isset($_SESSION['reset_success'])) $error = "invalid-or-expired-token";
 ?>
 
 <!DOCTYPE html>
-<html lang="<?=$_SESSION["lang"] ?? "en"?>">
+<html lang="<?= $_SESSION["lang"] ?? "en" ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="../styles.css">
-    <title><?=$texts["reset-password"]?></h2></title>
+    <title><?= $texts["reset-password"] ?></h2></title>
 </head>
 <body>
-<?= languageDropdown($texts["choose-language"], $_SESSION['lang'] ?? "en") ?>
+<?= languageDropdown() ?>
 <div class="login-container">
-<h2><?=$texts["reset-password"]?></h2>
+    <h2><?= $texts["reset-password"] ?></h2>
     <?php
     if (isset($error)) {
         echo '<div class="login-error">' . $texts[$error] . '</div>';

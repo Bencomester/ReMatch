@@ -1,0 +1,23 @@
+.blog {
+    width: 80%;
+    height: 200px;
+    padding: 20px;
+    background: linear-gradient(145deg, #C1C8E4, #84CEEB, #5AB9EA, #5680E9); /* Gradient background */
+    border-radius: 20px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2), -10px -10px 20px rgba(255, 255, 255, 0.3); /* Soft shadow for depth */
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.blog:hover {
+    transform: scale(1.05); /* Slightly scale up the div */
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.5); /* More intense shadow on hover */
+    background: linear-gradient(145deg, #5680E9, #5AB9EA, #84CEEB, #C1C8E4);
+}

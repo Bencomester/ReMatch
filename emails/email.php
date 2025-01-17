@@ -1,6 +1,5 @@
 <?php
 function emailChange($username, $link) : string {
-    $text = include_once "../lang/en.php";
     $support = "https://yourwebsite.com/contact";
     $year = date("Y");
     return <<<EOD

@@ -1,0 +1,61 @@
+.requirement {
+    color: red;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.requirement.met {
+    color: green;
+}
+
+.icon {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.requirement.met .icon {
+    color: green;
+    content: "✓";
+}
+
+.requirement .icon {
+    color: red;
+    content: "✗";
+}
+
+.phone-input-container {
+    position: relative;
+    margin-bottom: 1rem;
+    /* Adjust as needed */
+}
+
+.iti--allow-dropdown {
+    width: 100%;
+    /* Make the input field full width */
+}
+
+#phone {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 10px 10px 10px 20%;
+}
+
+.iti--container {
+    z-index: 1000;
+    /* Ensure the dropdown appears above other elements */
+}
+
+.iti__flag-container {
+    margin-right: 5px;
+    /* Add some spacing if the flag overlaps with the input */
+}
+
+.iti__country-container {
+    width: 200px;
+    /* Adjust the width of the selected flag container */
+}

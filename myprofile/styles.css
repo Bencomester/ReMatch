@@ -9,12 +9,8 @@
 body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #5AB9EA, #C1C8E4); /* Blue gradient background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     color: #333;
-    padding: 20px;
 }
 
 /* Profile Container */
@@ -26,6 +22,7 @@ body {
     width: 200%;
     max-width: 500px;
     text-align: center;
+    margin: 5% auto auto auto;
 }
 
 /* Profile Picture */
@@ -103,18 +100,6 @@ body {
 .logout-btn:hover {
     background-color: #E53935;
     transform: scale(1.05);
-}
-
-.language-dropdown {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 10px 15px;
-    font-size: 0.9rem;
-    z-index: 1000;
 }
 
 form {

@@ -1,6 +1,7 @@
 .container{
-    width: 500px;
-    height: 700px;
+    margin: 2% auto;
+    width: 25%;
+    height: 65%;
     background-color: #5680E9;
     border: 1px solid #ddd;
     display: flex;
@@ -41,7 +42,7 @@
 }
 
 #output {
-    max-height: 160px; /* Adjust height as needed */
+    max-height: 8em; /* Adjust height as needed */
     overflow-y: auto;
     margin-bottom: 10px;
     padding: 10px;
@@ -51,8 +52,5 @@ body {
     font-family: Arial, sans-serif;
     height: 100vh;
     margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background: linear-gradient(135deg,#84CEEB, #5680E9, #5AB9EA,#C1C8E4,#8860d0,#84CEEB);
 }

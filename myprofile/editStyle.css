@@ -9,12 +9,8 @@
 body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #5AB9EA, #C1C8E4); /* Blue gradient background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     color: #333;
-    padding: 20px;
 }
 
 /* Edit Profile Container */
@@ -26,6 +22,7 @@ body {
     width: 100%;
     max-width: 500px;
     text-align: center;
+    margin: 2% auto;
 }
 
 /* Heading Style */
@@ -145,30 +142,11 @@ input:focus,
     margin-bottom: 1rem;
 }
 
-.language-dropdown {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 10px 15px;
-    font-size: 0.9rem;
-    z-index: 1000;
-}
-
-.language-dropdown-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
 #phone {
     width: 100%;
-    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
     box-sizing: border-box;
-    padding-left: 20%;
+    padding: 10px 10px 10px 20%;
 }

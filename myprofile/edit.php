@@ -2,16 +2,15 @@
 require_once '../includes/config.php';
 require_once '../includes/security.php';
 require_once "../includes/dhb.inc.php";
+require_once "../lang/index.php";
+require_once "../includes/navbar.php";
 // Check if the user is logged in by verifying session variables
 if (!isset($_SESSION['logged-in'])) {
     header("Location: ..");
     exit();
 }
 
-include("../lang/index.php");
-if (isset($_GET['lang'])) $_SESSION['lang'] = $_GET['lang'];
-$lang = $_SESSION['lang'] ?? 'en';
-$texts = include "../lang/$lang.php";
+$texts = initLang();
 
 $query = "SELECT * FROM users WHERE id = :userid";
 $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
@@ -23,6 +22,8 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
     <link rel="stylesheet" href="editStyle.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/languagedropdown.css">
     <link rel="stylesheet" href="../node_modules/intl-tel-input/build/css/intlTelInput.min.css">
     <script src="../node_modules/intl-tel-input/build/js/intlTelInputWithUtils.min.js"></script>
     <!--suppress CssUnusedSymbol -->
@@ -34,7 +35,7 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
     </style>
 </head>
 <body>
-<?= languageDropdown($texts["choose-language"], $_SESSION['lang'] ?? "en") ?>
+<?= navbar() ?>
 <!-- Edit Profile Container -->
 <div class="edit-profile-container">
     <h2>Edit Profile</h2>
@@ -44,7 +45,8 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
         <div class="profile-picture-section">
             <label for="profile-picture">Profile Picture</label>
             <div class="profile-picture-preview">
-                <img id="profilePreview" src="<?= file_exists("../pfp/" . $_SESSION["userid"] . ".png") ? "../pfp/" . $_SESSION["userid"] . ".png" : (file_exists("../pfp/" . $_SESSION["userid"] . ".jpg") ? "../pfp/" . $_SESSION["userid"] . ".jpg" : "150.png") ?>"
+                <img id="profilePreview"
+                     src="<?= file_exists("../pfp/" . $_SESSION["userid"] . ".png") ? "../pfp/" . $_SESSION["userid"] . ".png" : (file_exists("../pfp/" . $_SESSION["userid"] . ".jpg") ? "../pfp/" . $_SESSION["userid"] . ".jpg" : "150.png") ?>"
                      alt="Profile Picture">
             </div>
             <input type="file" id="profile-picture" name="profile-picture" accept="image/*">

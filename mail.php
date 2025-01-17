@@ -26,7 +26,7 @@ function sendMail($email, $subject, $body) : void
         $mail->addAddress("[REDACTED_EMAIL]");  //Change this back to $email
 
         // Content
-        $mail->isHTML(true);
+        //$mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $body;
         $mail->AltBody = $body;

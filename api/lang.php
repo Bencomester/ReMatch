@@ -22,11 +22,7 @@ if ($_SERVER["REQUEST_METHOD"]=="GET") {
         exit();
     }
 
-    if ($lang == "hu") {
-        echo json_encode($file);
-    } else {
-        echo json_encode($file);
-    }
+    echo json_encode($file);
 } else {
     http_response_code(405); // Method Not Allowed
     $code = "invalid-request";

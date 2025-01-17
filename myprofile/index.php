@@ -1,35 +1,37 @@
 <?php
 require_once '../includes/config.php';
-// Check if the user is logged in by verifying session variables
+require_once "../lang/index.php";
+require_once "../includes/navbar.php";
+require_once __DIR__ . "/../includes/2fa.inc.php";
+require_once "userdata.php";
+
 if (!isset($_SESSION['logged-in'])) {
     header("Location: ..");
     exit();
 }
-require_once __DIR__ . "/../includes/2fa.inc.php";
-require_once("userdata.php");
-include("../lang/index.php");
-if (isset($_GET['lang'])) $_SESSION['lang'] = $_GET['lang'];
-$lang = $_SESSION['lang'] ?? 'en';
-$texts = include "../lang/$lang.php";
+
+$texts = initLang();
 
 $tfa = (is2faOnAndEnabled() ?? 0) == 1;
 $data = getData($_SESSION['userid'])
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang=<?= $texts["lang"] ?>>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $texts["title-myprofile"] ?></title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles/languagedropdown.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
 </head>
 <body>
-<?= languageDropdown($texts["choose-language"], $_SESSION['lang'] ?? "en") ?>
+<?= navbar() ?>
 <!-- Profile Container -->
 <div class="profile-container">
     <?php
-    if ($lang == "hu") $name = $data["lastname"] . " " . $data["firstname"];
+    if ($texts["lang"] == "hu") $name = $data["lastname"] . " " . $data["firstname"];
     else $name = $data["firstname"] . " " . $data["lastname"];
     if (isset($data["firstname"]) || $data["lastname"]) echo '<h2 class="user-name">' . $name . '</h2>'
     ?>

@@ -55,7 +55,7 @@ $texts = include "lang/$lang.php";
     <h1>$h1</h1>
     <p class="login-error">$p1</p>
     <p>$p2</p>
-    <a href="http://server/rematch/signup.php?newemail=$email">$a</a>
+    <a href="http://server/rematch/index.php?newemail=$email">$a</a>
     EOD;}
     ?>
 </div>

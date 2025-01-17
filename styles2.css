@@ -61,24 +61,3 @@ button a{
     font-size: 10pt;
     text-decoration: none;
 }
-.blog{
-    width: 300px;
-    height: 200px;
-    padding: 20px;
-    background: linear-gradient(145deg, #ff8a00, #da1b60);  /* Gradient background */
-    border-radius: 20px;
-    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2), -10px -10px 20px rgba(255, 255, 255, 0.3); /* Soft shadow for depth */
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-.blog:hover {
-    transform: scale(1.05); /* Slightly scale up the div */
-    box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.5); /* More intense shadow on hover */
-    background: linear-gradient(145deg, #da1b60, #ff8a00);
-}

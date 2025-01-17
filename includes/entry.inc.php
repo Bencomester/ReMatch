@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $lon = $_POST["long"];
     $lat = $_POST["lat"];
     createEntry($items, $price, $number, $lon, $lat);
-    header("Location: ../rematch.php?create=success");
+    header("Location: ../index.php?create=success");
     exit();
 }
 

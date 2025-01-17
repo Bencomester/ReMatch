@@ -38,12 +38,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if($errors){
             $_SESSION["error_signup"] = $errors;
             $_SESSION["signup_post"] = $_POST;
-            header("Location: ../signup.php");
+            header("Location: ../index.php");
             die();
         }
-        createUserAndSendEmail($username, $pwd, $email, $phone, $_POST["lastname"] ?? "", $_POST["firstname"] ?? "");
-        header("Location: ../signup.php?signup=success");
+    createUserAndSendEmail($username, $pwd, $email, $phone, $_POST["lastname"] ?? "", $_POST["firstname"] ?? "");
+    header("Location: ../index.php?signup=success");
 } else {
-    header("Location: ../signup.php");
+    header("Location: ../index.php");
 }
 die();
