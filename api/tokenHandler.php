@@ -1,11 +1,12 @@
 <?php
-require '../vendor/autoload.php';  // Composer's autoloader
+require_once __DIR__ . '/../vendor/autoload.php';  // Composer's autoloader
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 $secretKey = "secret"; //Change to something secure
 
-function generateJWT($userid) : string {
+function generateJWT($userid): string
+{
     global $secretKey;
     $issuedAt = time();  // When the token is issued
     $payload = [

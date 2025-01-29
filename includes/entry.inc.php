@@ -1,28 +1,16 @@
 <?php
 require "dhb.inc.php";
-require_once "config.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $items = $_POST["item"];
-    $number = $_POST["number"];
-    $price = $_POST["price"];
-    $lon = $_POST["long"];
-    $lat = $_POST["lat"];
-    createEntry($items, $price, $number, $lon, $lat);
-    header("Location: ../index.php?create=success");
-    exit();
-}
-
-function createEntry($item, $price, $amount, $lon, $lat): void
+function createEntry(int $userid, array $items, float $lon, float $lat): void
 {
     $id = generateId();
-    for ($i = 0; $i < count($item); $i++) {
+    for ($i = 0; $i < count($items); $i++) {
         $query = "INSERT INTO blogs (item, number, price, blog_id) values (:items, :number, :price, :blog_id);";
-        $param = [":items" => $item[$i], ":number" => $amount[$i], ":price" => $price[$i], ":blog_id" => $id];
+        $param = [":items" => $items[$i]["item"], ":number" => $items[$i]["amount"], ":price" => $items[$i]["price"], ":blog_id" => $id];
         doQuery($query, $param);
     }
     $query = "INSERT INTO blog (userid, blog_id, timestamp, lon, lat) values (:userid, :blog_id, unix_timestamp(), :lon, :lat);";
-    $param = [":userid" => $_SESSION["userid"], ":blog_id" => $id, ":lon" => $lon, ":lat" => $lat];
+    $param = [":userid" => $userid, ":blog_id" => $id, ":lon" => $lon, ":lat" => $lat];
     doQuery($query, $param);
 }
 
@@ -55,6 +43,7 @@ function getEntriesSearchAndSort($search = "", $sort = "time", bool $descending 
 
     $query = "
         SELECT 
+            blog.blog_id AS id,
             username, 
             SUM(number) AS amount, 
             SUM(price * number) AS price,
@@ -90,10 +79,13 @@ function getMyEntries(int $userid): array
 {
     $query = "
         SELECT 
-            username, 
+            username,
+            blog.blog_id AS id,
             SUM(number) AS amount, 
             SUM(price * number) AS price,
-            timestamp AS time
+            timestamp AS time,
+            lon,
+            lat
         FROM 
             users, blog, blogs 
         WHERE 
@@ -152,7 +144,10 @@ function editEntry(int $id, int $userid, array $items, int $lon = 0, int $lat = 
 function deleteEntry(int $id, int $userid): bool
 {
     $query = "SELECT userid FROM blog WHERE blog_id = :id;";
-    if (returnQuery($query, ["id" => $id])["userid"] != $userid) return false;
+    $result = returnQuery($query, ["id" => $id]);
+    if (!$result || !isset($result["userid"]) || $result["userid"] != $userid) {
+        return false;
+    }
     doQuery("DELETE FROM blogs WHERE blog_id = :id", ["id" => $id]);
     doQuery("DELETE FROM blog WHERE blog_id = :id", ["id" => $id]);
     return true;

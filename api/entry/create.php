@@ -18,19 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $lat = $data["lat"];
         $lon = $data["lon"];
         $list = $data["items"];
-        $item = [];
-        $price = [];
-        $amount = [];
-        foreach ($list as $i) {
-            $item = $i["item"];
-            $price = $i["price"];
-            $amount = $i["amount"];
-        }
 
         $code = "action-successful";
         $id = $decodedJWT->userid;
 
-        createEntry($item, $price, $amount, $lon, $lat);
+        createEntry($decodedJWT->userid, $list, $lon, $lat);
         echo json_encode(["status" => "success", "code" => $code, "message" => $en[$code]]);
     } else {
         $code = "invalid-or-expired-token";
