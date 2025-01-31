@@ -85,4 +85,9 @@ return [
     "settings" => "Settings",
     "new-item" => "Nem Item",
     "lang" => "en",
+    "plastic-bottle" => "PLASTIC BOTTLE",
+    "glass-bottle" => "GLASS BOTTLE",
+    "aluminium" => "ALUMINIUM",
+    "missing-location" => "Location data is missing",
+    "missing-or-wrong-2fa" => "2fa one time code is missing or incorrect",
 ];

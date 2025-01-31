@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if (!empty($errors)) {
-        echo json_encode(["status" => "error",  "code" => $code, "message" => $en[$code], "all-codes" => array_keys($errors), "all-messages" => array_values($errors)]);
+        echo json_encode(["status" => "error",  "code" => $code, "message" => $en[$code], "all-codes" => array_keys($errors)]);
         //echo json_encode(["status" => "error", "error" => array_values($errors)[0]]);
         exit();
     }

@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"]=="GET") {
 
     if (isset($data["code"])) {
         $code = $data["code"];
-        echo json_encode(["message" => $file[$code]]);
+        echo json_encode(["status" => "success", "code" => "action-successful", "message" => $file[$code]]);
         exit();
     }
 
