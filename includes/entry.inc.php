@@ -1,30 +1,14 @@
 <?php
 require "dhb.inc.php";
 
-function createEntry(int $userid, array $items, float $lon, float $lat): void
+function createEntry(int $userid, int $plastic, int $glass, int $alu, float $lon, float $lat): void
 {
-    $id = generateId();
-    for ($i = 0; $i < count($items); $i++) {
-        $query = "INSERT INTO blogs (item, number, price, blog_id) values (:items, :number, :price, :blog_id);";
-        $param = [":items" => $items[$i]["item"], ":number" => $items[$i]["amount"], ":price" => $items[$i]["price"], ":blog_id" => $id];
-        doQuery($query, $param);
-    }
-    $query = "INSERT INTO blog (userid, blog_id, timestamp, lon, lat) values (:userid, :blog_id, unix_timestamp(), :lon, :lat);";
-    $param = [":userid" => $userid, ":blog_id" => $id, ":lon" => $lon, ":lat" => $lat];
+    $total = $plastic + $glass + $alu;
+    $worth = $total * 50;
+    $price = $total * 24;
+    $query = "INSERT INTO entry (userid, plastic, glass, aluminium, worth, price, total, lon, lat, timestamp) values (:userid, :plastic, :glass, :alu, :worth, :price, :total, :lon, :lat, unix_timestamp());";
+    $param = ["userid" => $userid, "plastic" => $plastic, "glass" => $glass, "alu" => $alu, "lon" => $lon, "lat" => $lat, "total" => $total, "worth" => $worth, "price" => $price];
     doQuery($query, $param);
-}
-
-function generateId(): int
-{
-    $query = "SELECT blog_id FROM blog;";
-    $blog_ids = [];
-    foreach (returnQueryAll($query) as $row) $blog_ids[] = $row["blog_id"];
-    $id = 1;
-    while (true) {
-        if (!in_array($id, $blog_ids)) break;
-        $id++;
-    }
-    return $id;
 }
 
 function getEntriesSearchAndSort($search = "", $sort = "time", bool $descending = false, int $limit = 50, float $userLat = 0, float $userLon = 0): array
@@ -43,10 +27,14 @@ function getEntriesSearchAndSort($search = "", $sort = "time", bool $descending 
 
     $query = "
         SELECT 
-            blog.blog_id AS id,
+            entry.id AS id,
             username, 
-            SUM(number) AS amount, 
-            SUM(price * number) AS price,
+            plastic,
+            glass,
+            aluminium,
+            total AS amount,
+            price,
+            worth,
             timestamp AS time,
             (6371 * acos(
                 cos(radians(:userLat)) * 
@@ -56,13 +44,10 @@ function getEntriesSearchAndSort($search = "", $sort = "time", bool $descending 
                 sin(radians(lat))
             )) AS distance
         FROM 
-            users, blog, blogs 
-        WHERE 
-            blog.blog_id = blogs.blog_id 
-            AND userid = users.id 
+            users, entry 
+        WHERE
+            userid = users.id 
             AND username LIKE :search 
-        GROUP BY 
-            blog.blog_id
         ORDER BY 
             $sort $order
         LIMIT $limit
@@ -75,25 +60,52 @@ function getEntriesSearchAndSort($search = "", $sort = "time", bool $descending 
     ]);
 }
 
+function getEntryById(int $id, float $lat = 0, float $lon = 0) {
+    $query = "
+        SELECT
+            username, 
+            plastic,
+            glass,
+            aluminium,
+            total AS amount,
+            price,
+            worth,
+            timestamp AS time,
+            (6371 * acos(
+                cos(radians(:userLat)) * 
+                cos(radians(lat)) * 
+                cos(radians(lon) - radians(:userLon)) + 
+                sin(radians(:userLat)) * 
+                sin(radians(lat))
+            )) AS distance
+        FROM 
+            users, entry 
+        WHERE
+            userid = users.id 
+            AND entry.id = :id
+    ;";
+    return returnQuery($query, ["id" => $id, "userLat" => $lat, "userLon" => $lon]);
+}
+
 function getMyEntries(int $userid): array
 {
     $query = "
-        SELECT 
-            username,
-            blog.blog_id AS id,
-            SUM(number) AS amount, 
-            SUM(price * number) AS price,
+        SELECT
+            entry.id AS id,
+            plastic,
+            glass,
+            aluminium,
+            total AS amount,
+            price,
+            worth,
             timestamp AS time,
             lon,
             lat
         FROM 
-            users, blog, blogs 
-        WHERE 
-            blog.blog_id = blogs.blog_id 
-            AND userid = users.id
+            users, entry 
+        WHERE
+            userid = users.id
             AND userid = :userid
-        GROUP BY 
-            blog.blog_id
         ORDER BY 
             'time' DESC
     ;";
@@ -101,54 +113,27 @@ function getMyEntries(int $userid): array
     return returnQueryAll($query, [":userid" => $userid]);
 }
 
-function getEntryDetails(int $id): array
+function editEntry(int $id, int $userid, int $plastic, int $glass, int $alu, float $lon = 0, float $lat = 0): bool
 {
-    $query = "
-        SELECT 
-            price, item, number AS amount
-        FROM 
-            users, blog, blogs 
-        WHERE 
-            blog.blog_id = blogs.blog_id 
-            AND userid = users.id
-            AND blogs.blog_id = :id
-        ORDER BY
-            item DESC,
-            amount DESC,
-            price DESC
-    ;";
-
-    return returnQueryAll($query, [":id" => $id]);
-}
-
-function editEntry(int $id, int $userid, array $items, int $lon = 0, int $lat = 0): bool
-{
-    $query = "SELECT userid FROM blog WHERE blog_id = :id;";
-    if (returnQuery($query, ["id" => $id])["userid"] != $userid) return false;
-
-    doQuery("DELETE FROM blogs WHERE blog_id = :id", ["id" => $id]);
-
-    for ($i = 0; $i < count($items); $i++) {
-        $query = "INSERT INTO blogs (item, number, price, blog_id) values (:items, :number, :price, :blog_id);";
-        $param = [":items" => $items[$i]["item"], ":number" => $items[$i]["amount"], ":price" => $items[$i]["price"], ":blog_id" => $id];
-        doQuery($query, $param);
-    }
-
-    if ($lon == 0 && $lat == 0) return true;
-    $query = "UPDATE blog SET lon = :lon, lat = :lat WHERE blog_id = :id;";
-    $param = [":id" => $id, ":lon" => $lon, ":lat" => $lat];
+    $query = "SELECT userid, lon, lat FROM entry WHERE id = :id;";
+    $result =  returnQuery($query, ["id" => $id]);
+    if ($result["userid"] != $userid) return false;
+    $total = $plastic + $glass + $alu;
+    $worth = $total * 50;
+    $price = $total * 24;
+    if ($lon == 0) $lon = $result["lon"];
+    if ($lat == 0) $lat = $result["lat"];
+    $query = "UPDATE entry SET plastic = :plastic, glass = :glass, aluminium = :alu, lon = :lon, lat = :lat, total = :total, worth = :worth, price = :price WHERE id = :id;";
+    $param = ["userid" => $userid, "plastic" => $plastic, "glass" => $glass, "alu" => $alu, "lon" => $lon, "lat" => $lat, "id" => $id, "total" => $total, "worth" => $worth, "price" => $price];
     doQuery($query, $param);
     return true;
 }
 
 function deleteEntry(int $id, int $userid): bool
 {
-    $query = "SELECT userid FROM blog WHERE blog_id = :id;";
+    $query = "SELECT userid FROM entry WHERE id = :id;";
     $result = returnQuery($query, ["id" => $id]);
-    if (!$result || !isset($result["userid"]) || $result["userid"] != $userid) {
-        return false;
-    }
-    doQuery("DELETE FROM blogs WHERE blog_id = :id", ["id" => $id]);
-    doQuery("DELETE FROM blog WHERE blog_id = :id", ["id" => $id]);
+    if (!$result || !isset($result["userid"]) || $result["userid"] != $userid) return false;
+    doQuery("DELETE FROM entry WHERE id = :id", ["id" => $id]);
     return true;
 }

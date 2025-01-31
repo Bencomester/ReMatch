@@ -3,17 +3,7 @@ require_once "../includes/entry.inc.php";
 require_once "../includes/config.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $item = $_POST["item"];
-    $number = $_POST["number"];
-    $price = $_POST["price"];
-    $lon = $_POST["long"];
-    $lat = $_POST["lat"];
-    $items = [];
-    for ($i = 0; $i < count($item); $i++) {
-        $items[] = ["item" => $item[$i], "amount" => $number[$i], "price" => $price[$i]];
-    }
-
-    createEntry($_SESSION["userid"], $items, $lon, $lat);
+    createEntry($_SESSION["userid"], $_POST["plastic"], $_POST["glass"], $_POST["aluminium"], $_POST["long"], $_POST["lat"]);
     header("Location: .?create=success");
     exit();
 }

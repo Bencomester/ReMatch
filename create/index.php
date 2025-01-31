@@ -20,11 +20,9 @@ $data = getLocationData(getUserIP())
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../styles3.css">
+    <link rel="stylesheet" href="../styles/styles_create.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/languagedropdown.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=[REDACTED_MAPS_API_KEY]&libraries=places&callback=initMap"
-            async defer></script>
     <style>
         #map {
             height: 130%;
@@ -42,13 +40,35 @@ $data = getLocationData(getUserIP())
     <form id="form" action="create.php" method="post">
         <input type="hidden" name="long" id="long" value="<?= $data["lng"] ?? 19.045900 ?>">
         <input type="hidden" name="lat" id="lat" value="<?= $data["lat"] ?? 47.507690 ?>">
-        <div class="item" id="output"></div>
-        <div class="button_div">
-            <button type="button" onclick="generateCode()" class="newitem">New Item</button>
+        <div class="item" id="output">
+            <div class="item_sor">
+                <select name="item[]" disabled>
+                    <option value="1" selected="selected"> PET PALACK </option>
+                    <option value="2"> ÜVEG </option>
+                    <option value="3"> ALUMÍNIUM </option>
+                </select>
+                <input type="number" name="plastic" min="0" step="1" value="1">
+            </div>
+            <div class="item_sor">
+                <select name="item[]" disabled>
+                    <option value="1"> PET PALACK </option>
+                    <option value="2" selected="selected"> ÜVEG </option>
+                    <option value="3"> ALUMÍNIUM </option>
+                </select>
+                <input type="number" name="glass" min="0" step="1" value="1">
+            </div>
+            <div class="item_sor">
+                <select name="item[]" disabled>
+                    <option value="1"> PET PALACK </option>
+                    <option value="2"> ÜVEG </option>
+                    <option value="3" selected="selected"> ALUMÍNIUM </option>
+                </select>
+                <input type="number" name="aluminium" min="0" step="1" value="1">
+            </div>
         </div>
         <div id="map"></div>
         <div class="button_div">
-            <button type="submit" class="sumbit">Submit</button>
+            <button type="submit" class="submit">Submit</button>
         </div>
     </form>
 </div>
@@ -59,13 +79,32 @@ $data = getLocationData(getUserIP())
     const longInp = document.getElementById("long");
     const latInp = document.getElementById("lat");
 
+    async function loadGoogleMaps() {
+        return new Promise((resolve, reject) => {
+            if (window.google && google.maps) {
+                resolve(); // Google Maps is already loaded
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://maps.googleapis.com/maps/api/js?key=[REDACTED_MAPS_API_KEY]&libraries=marker,places&callback=initMap";
+            script.async = true;
+            script.defer = true;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
     async function initMap() {
+        await loadGoogleMaps();
+
         const initialLocation = {
             lat: parseFloat(latInp.value),
             lng: parseFloat(longInp.value)
         };
 
-        const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
         // Initialize the map
         map = new google.maps.Map(document.getElementById("map"), {
@@ -74,7 +113,7 @@ $data = getLocationData(getUserIP())
             center: initialLocation,
         });
 
-        getLocation()
+        getLocation(AdvancedMarkerElement)
 
         // Add a marker
         createNewMarker(AdvancedMarkerElement, initialLocation.lat, initialLocation.lng);
@@ -85,12 +124,16 @@ $data = getLocationData(getUserIP())
         });
     }
 
-    function getLocation() {
+    function getLocation(AdvancedMarkerElement) {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     latInp.value = position.coords.latitude;
                     longInp.value = position.coords.longitude;
+                    createNewMarker(AdvancedMarkerElement, position.coords.latitude, position.coords.longitude)
+                },
+                (error) => {
+                    console.warn("Geolocation error:", error);
                 }
             );
         }
@@ -98,9 +141,7 @@ $data = getLocationData(getUserIP())
 
     function createNewMarker(AdvancedMarkerElement, lat, lng) {
         // Remove the old marker
-        if (marker) {
-            marker.map = null; // This removes the marker from the map
-        }
+        if (marker) marker.setMap(null); // Remove old marker
 
         // Create a new marker
         marker = new AdvancedMarkerElement({
@@ -113,85 +154,6 @@ $data = getLocationData(getUserIP())
         longInp.value = lng;
         latInp.value = lat;
     }
-
-    function generateCode() {
-        const output = document.getElementById('output');
-
-        // Create the new elements
-        const div = document.createElement('div');
-        div.className = "item_sor";
-
-        const select = document.createElement('select');
-        select.name = "item[]";
-        select.innerHTML = `
-            <option value=""> Choose an item </option>
-            <option value="1"> PET PALACK </option>
-            <option value="2"> ÜVEG </option>
-            <option value="3"> ALUMÍNIUM </option>
-        `;
-
-        const priceInput = document.createElement("input");
-        priceInput.type = "number";
-        priceInput.name = "price[]";
-        priceInput.value = 50; // Default value
-        priceInput.min = 5;
-        priceInput.max = 300;
-        priceInput.step = 5;
-        priceInput.readOnly = false;
-        priceInput.addEventListener('keydown', function (event) {
-            event.preventDefault()
-        });
-
-        const counterInput = document.createElement("input");
-        counterInput.type = "number";
-        counterInput.name = "number[]";
-        counterInput.value = 1; // Default value
-        counterInput.min = 1;
-        counterInput.step = 1;
-        counterInput.readOnly = false;
-        counterInput.addEventListener('keydown', function (event) {
-            event.preventDefault()
-        });
-
-        const incrementButton = document.createElement("button");
-        incrementButton.textContent = "+";
-        incrementButton.type = "button";
-        incrementButton.onclick = function () {
-            counterInput.value = parseInt(counterInput.value) + 1;
-        };
-
-        const decrementButton = document.createElement("button");
-        decrementButton.textContent = "-";
-        decrementButton.type = "button";
-        decrementButton.onclick = function () {
-            counterInput.value = Math.max(1, parseInt(counterInput.value) - 1);
-        };
-
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.type = "button";
-        deleteButton.name = "delete"
-        deleteButton.onclick = function () {
-            if (document.querySelectorAll(".item_sor").length > 1) {
-                output.removeChild(div); // Remove the current div
-            } else {
-                alert("You must keep at least one item.");
-            }
-        };
-
-        // Append elements to the div
-        div.appendChild(select);
-        div.appendChild(priceInput);
-        div.appendChild(counterInput);
-        div.appendChild(incrementButton);
-        div.appendChild(decrementButton);
-        div.appendChild(deleteButton);
-
-        // Append the div to the output container
-        output.appendChild(div);
-    }
-
-    generateCode()
 
     // Form validation
     const form = document.getElementById("form");
@@ -227,6 +189,8 @@ $data = getLocationData(getUserIP())
             }
         }
     });
+
+    window.onload = initMap();
 </script>
 </body>
 </html>
