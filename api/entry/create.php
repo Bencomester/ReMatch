@@ -14,15 +14,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $decodedJWT = authenticateJWT();
     if (!empty($decodedJWT)) {
         $data = json_decode(file_get_contents("php://input"), true);
-
+        if (empty($lat) || empty($lon)) {
+            $code = "missing-location";
+            echo json_encode(["status" => "error", "code" => $code, "message" => $en[$code]]);
+            exit();
+        }
         $lat = $data["lat"];
         $lon = $data["lon"];
-        $list = $data["items"];
 
         $code = "action-successful";
         $id = $decodedJWT->userid;
 
-        createEntry($decodedJWT->userid, $list, $lon, $lat);
+        createEntry($decodedJWT->userid, $data["plastic"] ?? 0, $data["glass"] ?? 0, $data["aluminium"] ?? 0, $lon, $lat);
         echo json_encode(["status" => "success", "code" => $code, "message" => $en[$code]]);
     } else {
         $code = "invalid-or-expired-token";

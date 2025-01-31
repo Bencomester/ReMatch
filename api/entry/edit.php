@@ -15,12 +15,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!empty($decodedJWT)) {
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data["id"];
-
         $lat = $data["lat"] ?? 0;
         $lon = $data["lon"] ?? 0;
-        $items = $data["items"];
 
-        if (editEntry($id, $decodedJWT->userid, $items, $lon, $lat)) {
+        if (editEntry($id, $decodedJWT->userid, $data["plastic"] ?? 0, $data["glass"] ?? 0, $data["aluminium"] ?? 0, $lon, $lat)) {
             $code = "action-successful";
             echo json_encode(["status" => "success", "code" => $code, "message" => $en[$code]]);
         } else {
