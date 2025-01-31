@@ -28,7 +28,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !isset($_SESSION["userid"])) {
 
                 $_SESSION['userid'] = $data["id"];
                 if (enabled2fa($data["id"])) {
-                    header("Location: " . str_replace("/var/www/html", "", __DIR__) . "/../2fa.php");
+                    header("Location: " . str_replace("/var/www/html", "", __DIR__) . "/../2fa");
                 } else {
                     loginSuccessful($data);
                     exit();

@@ -11,36 +11,19 @@ use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use OTPHP\TOTP;
 
-require_once __DIR__ . "/config.php";
 require_once __DIR__ . "/dhb.inc.php";
 require_once __DIR__ . "/login.inc.php";
 
-if ($_SERVER["REQUEST_METHOD"]=="POST") {
-    $enabled = (is2faOnAndEnabled() ?? 0) == 1;
-    $otp = str_replace(" ", "", $_POST["otp"]);
-    $error = !run2tfa($otp, !$enabled);
-    if ($error) {
-        header("Location: ../2fa.php?enable=failure");
-        exit();
-    } else {
-        if ($enabled) {
-            loginSuccessful(useridQuery($_SESSION["userid"]));
-            exit();
-        }
-        header("Location: ../2fa.php?enable=success");
-    }
-}
-
-function is2faOnAndEnabled()
+function is2faOnAndEnabled($userid)
 {
-    $enabled = returnQuery("SELECT enabled FROM 2fa WHERE userid = :userid", ["userid" => $_SESSION["userid"]]);
+    $enabled = returnQuery("SELECT enabled FROM 2fa WHERE userid = :userid", ["userid" => $userid]);
     return empty($enabled) ? null : $enabled["enabled"];
 }
 
 function disable2fa(): void
 {
     doQuery("UPDATE 2fa SET enabled = 0 WHERE :userid = userid;", ["userid" => $_SESSION["userid"]]);
-    header("Location: myprofile");
+    header("Location: ../myprofile");
 }
 
 function create2fa(): string
@@ -73,21 +56,20 @@ function getSecretQR(): string
     return base64_encode(createQR($totp->getProvisioningUri())->getString());
 }
 
-function verify2fa($userOtp): bool
+function verify2fa($userOtp, $userid): bool
 {
-    $secret = returnQuery("SELECT secret FROM 2fa WHERE userid = :userid", ["userid" => $_SESSION["userid"]])["secret"];
+    $secret = returnQuery("SELECT secret FROM 2fa WHERE userid = :userid", ["userid" => $userid])["secret"];
 
     $totp = TOTP::create($secret);
     $totp->setLabel('ReMatch');
     $totp->setIssuer('rematch.com');
 
     // Verify the OTP
-    if ($totp->verify($userOtp)) return true;
-    return false;
+    return $totp->verify($userOtp);
 }
 
 function enable2fa($userOtp) : bool {
-    if (verify2fa($userOtp)) {
+    if (verify2fa($userOtp, $_SESSION["userid"])) {
         doQuery("UPDATE 2fa SET enabled = 1 WHERE userid = :userid ", ["userid" => $_SESSION["userid"]]);
         return true;
     }
@@ -98,7 +80,7 @@ function run2tfa($userOtp, $isFirst) : bool {
     if ($isFirst) {
         return enable2fa($userOtp);
     } else {
-        return verify2fa($userOtp);
+        return verify2fa($userOtp, $_SESSION["userid"]);
     }
 }
 

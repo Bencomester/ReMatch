@@ -49,7 +49,7 @@ $data = getData($_SESSION['userid'])
     <div class="profile-actions">
         <button class="btn edit-btn" onclick="window.location.href='edit.php';"><?= $texts["edit-profile"] ?></button>
         <button class="btn edit-btn"
-                onclick="window.location.href='<?= $tfa ? "../2fa.php?disable=true" : "../2fa.php" ?>';"><?= $tfa ? "Disable 2fa" : "Enable 2fa" ?></button>
+                onclick="window.location.href='<?= $tfa ? "../2fa/?disable=true" : "../2fa" ?>';"><?= $tfa ? "Disable 2fa" : "Enable 2fa" ?></button>
         <button class="btn logout-btn" onclick="window.location.href='../logout.php';"><?= $texts["log-out"] ?></button>
     </div>
 </div>

@@ -28,6 +28,14 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             echo json_encode(["status" => "error", "code" => $code, "message" => $en[$code]]);
             exit();
         }
+
+        $tfa = is2faOnAndEnabled($result["id"]);
+        if (!empty($tfa) && $tfa == 1 && !verify2fa($data["2fa"] ?? 0, $result["id"])) {
+            $code = "missing-or-wrong-2fa";
+            echo json_encode(["status" => "error", "code" => $code, "message" => $en[$code]]);
+            exit();
+        }
+
         date_default_timezone_set("UTC");
         $query="INSERT INTO login (userid, date) values (:id, :date);";
         $param = [":id" => $result["id"], ":date" => date("Y-m-d H:i:s")];
