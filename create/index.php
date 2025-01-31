@@ -42,28 +42,16 @@ $data = getLocationData(getUserIP())
         <input type="hidden" name="lat" id="lat" value="<?= $data["lat"] ?? 47.507690 ?>">
         <div class="item" id="output">
             <div class="item_sor">
-                <select name="item[]" disabled>
-                    <option value="1" selected="selected"> PET PALACK </option>
-                    <option value="2"> ÜVEG </option>
-                    <option value="3"> ALUMÍNIUM </option>
-                </select>
-                <input type="number" name="plastic" min="0" step="1" value="1">
+                <label for="plastic"><?= $texts["plastic-bottle"] ?></label>
+                <input id="plastic" type="number" name="plastic" min="0" step="1" value="1">
             </div>
             <div class="item_sor">
-                <select name="item[]" disabled>
-                    <option value="1"> PET PALACK </option>
-                    <option value="2" selected="selected"> ÜVEG </option>
-                    <option value="3"> ALUMÍNIUM </option>
-                </select>
-                <input type="number" name="glass" min="0" step="1" value="1">
+                <label for="glass"><?= $texts["glass-bottle"] ?></label>
+                <input id="glass" type="number" name="glass" min="0" step="1" value="1">
             </div>
             <div class="item_sor">
-                <select name="item[]" disabled>
-                    <option value="1"> PET PALACK </option>
-                    <option value="2"> ÜVEG </option>
-                    <option value="3" selected="selected"> ALUMÍNIUM </option>
-                </select>
-                <input type="number" name="aluminium" min="0" step="1" value="1">
+                <label for="aluminium"><?= $texts["aluminium"] ?></label>
+                <input id="aluminium" type="number" name="aluminium" min="0" step="1" value="1">
             </div>
         </div>
         <div id="map"></div>

@@ -12,7 +12,7 @@ if (!isset($_SESSION['logged-in'])) {
 
 $texts = initLang();
 
-$tfa = (is2faOnAndEnabled() ?? 0) == 1;
+$tfa = (is2faOnAndEnabled($_SESSION['userid']) ?? 0) == 1;
 $data = getData($_SESSION['userid'])
 ?>
 
