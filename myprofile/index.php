@@ -12,7 +12,7 @@ if (!isset($_SESSION['logged-in'])) {
 
 $texts = initLang();
 
-$tfa = (is2faOnAndEnabled($_SESSION['userid']) ?? 0) == 1;
+$tfa = (is2faOnOrEnabled($_SESSION['userid']) ?? 0) == 1;
 $data = getData($_SESSION['userid'])
 ?>
 
@@ -30,6 +30,8 @@ $data = getData($_SESSION['userid'])
 <?= navbar() ?>
 <!-- Profile Container -->
 <div class="profile-container">
+    <?php if (($_GET["2fa"] ?? "") == "enabled") echo "<div class='login-success'>2fa successfully enabled</div>"; ?>
+    <?php if (($_GET["2fa"] ?? "") == "disabled") echo "<div class='login-error'>2fa successfully disabled</div>"; ?>
     <?php
     if ($texts["lang"] == "hu") $name = $data["lastname"] . " " . $data["firstname"];
     else $name = $data["firstname"] . " " . $data["lastname"];
@@ -49,7 +51,7 @@ $data = getData($_SESSION['userid'])
     <div class="profile-actions">
         <button class="btn edit-btn" onclick="window.location.href='edit.php';"><?= $texts["edit-profile"] ?></button>
         <button class="btn edit-btn"
-                onclick="window.location.href='<?= $tfa ? "../2fa/?disable=true" : "../2fa" ?>';"><?= $tfa ? "Disable 2fa" : "Enable 2fa" ?></button>
+                onclick="window.location.href='<?= $tfa ? "../2fa/disable.php" : "../2fa/enable" ?>';"><?= $tfa ? "Disable 2fa" : "Enable 2fa" ?></button>
         <button class="btn logout-btn" onclick="window.location.href='../logout.php';"><?= $texts["log-out"] ?></button>
     </div>
 </div>

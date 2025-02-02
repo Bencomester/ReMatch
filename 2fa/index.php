@@ -4,20 +4,25 @@ require_once __DIR__ . "/../includes/security.php";
 require_once __DIR__ . "/../includes/2fa.inc.php";
 include __DIR__ . "/../lang/index.php";
 
+if (isset($_SESSION["logged-in"])) {
+    header("Location: ../myprofile");
+    exit();
+}
+
 if (!isset($_SESSION['userid'])) {
-    header("Location: .");
+    header("Location: ../login");
     exit();
 }
 
 $texts = initLang();
 
-$enabled = is2faOnAndEnabled($_SESSION["userid"]);
-if (!isset($enabled)) {
-    $code = create2fa();
-    $enabled = 0;
-} else if ($enabled == 0) $code = getSecretQR();
+$enabled = is2faOnOrEnabled($_SESSION["userid"]);
 
-if (($_SESSION["logged-in"] ?? false) && $enabled == 1 && isset($_GET["disable"]) && $_GET["disable"] ?? "" == true) disable2fa();
+if ($enabled < 1) {
+    header("Location: ../login");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -27,20 +32,13 @@ if (($_SESSION["logged-in"] ?? false) && $enabled == 1 && isset($_GET["disable"]
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="../styles.css">
-    <title>2tfa</title>
+    <title>Rematch - 2tfa</title>
 </head>
 <body>
 <?= languageDropdown() ?>
 <div class="login-container">
-    <h2><?= $enabled == 0 ? "Enable 2fa" : "Verify 2fa" ?></h2>
-    <?php
-    if (isset($_GET["enable"])) {
-        $class = $_GET["enable"] == "success" ? "login-success" : "login-error";
-        $message = $_GET["enable"] == "success" ? "2fa successfully enabled!" : "Invalid code!";
-        echo "<div class=$class>$message</div>";
-    }
-    ?>
-    <?php if (isset($code)) echo '<img src="data:image/png;base64,' . $code . '" alt="QR Code">' ?>
+    <h2>Verify 2fa</h2>
+    <?php if ($_GET["verify"] ?? "" == "failed") echo "<div class='login-error'>Invalid code!</div>"; ?>
     <form action="2fa.php" id="form" method="post">
         <label for="otp">2fa code</label>
         <input
@@ -54,11 +52,7 @@ if (($_SESSION["logged-in"] ?? false) && $enabled == 1 && isset($_GET["disable"]
             <span class="button-text"><?= $texts["verify-2fa"] ?></span>
             <span class="spinner"></span>
         </button>
-
     </form>
-    <?php
-    if ($_SESSION["logged-in"] ?? false) echo '<a href="../myprofile">My profile</a>'
-    ?>
 </div>
 
 <script>

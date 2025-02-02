@@ -14,19 +14,18 @@ use OTPHP\TOTP;
 require_once __DIR__ . "/dhb.inc.php";
 require_once __DIR__ . "/login.inc.php";
 
-function is2faOnAndEnabled($userid)
+function is2faOnOrEnabled($userid): int
 {
     $enabled = returnQuery("SELECT enabled FROM 2fa WHERE userid = :userid", ["userid" => $userid]);
-    return empty($enabled) ? null : $enabled["enabled"];
+    return empty($enabled) ? -1 : $enabled["enabled"];
 }
 
-function disable2fa(): void
+function disable2fa($userid): void
 {
-    doQuery("UPDATE 2fa SET enabled = 0 WHERE :userid = userid;", ["userid" => $_SESSION["userid"]]);
-    header("Location: ../myprofile");
+    doQuery("UPDATE 2fa SET enabled = 0 WHERE :userid = userid;", ["userid" => $userid]);
 }
 
-function create2fa(): string
+function create2fa($userid): string
 {
     // Generate a TOTP instance
     $totp = TOTP::create();
@@ -41,15 +40,15 @@ function create2fa(): string
     // Generate a QR code URL for the user to scan
     $qrCodeUrl = $totp->getProvisioningUri();
 
-    doQuery("INSERT INTO 2fa (userid, secret, enabled, timestamp) values (:userid, :secret, 0, unix_timestamp())", ["userid" => $_SESSION["userid"], "secret" => $secret]);
+    doQuery("INSERT INTO 2fa (userid, secret, enabled, timestamp) values (:userid, :secret, 0, unix_timestamp())", ["userid" => $userid, "secret" => $secret]);
 
     // Display the QR code using a service like Google Chart API
     return base64_encode(createQR($qrCodeUrl)->getString());
 }
 
-function getSecretQR(): string
+function getSecretQR($userid): string
 {
-    $secret = returnQuery("SELECT secret FROM 2fa WHERE userid = :userid", ["userid" => $_SESSION["userid"]])["secret"];
+    $secret = returnQuery("SELECT secret FROM 2fa WHERE userid = :userid", ["userid" => $userid])["secret"];
     $totp = TOTP::create($secret);
     $totp->setLabel('ReMatch');
     $totp->setIssuer('rematch.com');
@@ -68,20 +67,8 @@ function verify2fa($userOtp, $userid): bool
     return $totp->verify($userOtp);
 }
 
-function enable2fa($userOtp) : bool {
-    if (verify2fa($userOtp, $_SESSION["userid"])) {
-        doQuery("UPDATE 2fa SET enabled = 1 WHERE userid = :userid ", ["userid" => $_SESSION["userid"]]);
-        return true;
-    }
-    return false;
-}
-
-function run2tfa($userOtp, $isFirst) : bool {
-    if ($isFirst) {
-        return enable2fa($userOtp);
-    } else {
-        return verify2fa($userOtp, $_SESSION["userid"]);
-    }
+function enable2fa($userid) : void {
+        doQuery("UPDATE 2fa SET enabled = 1 WHERE userid = :userid ", ["userid" => $userid]);  //TODO: update password time, for resetting tokens
 }
 
 function createQR($qrCodeUrl) {

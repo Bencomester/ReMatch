@@ -1,6 +1,7 @@
 <?php
-require_once "dhb.inc.php";
-require_once "config.php";
+require_once __DIR__ . "/dhb.inc.php";
+require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/../lang/index.php";
 
 function navbar(): string
 {
@@ -15,7 +16,7 @@ function navbar(): string
 
         </div>
         <div class="logo">
-            <h3>Rematch</h3>
+            <h3>ReMatch</h3>
         </div>
         <div class="hamburger">
             <div class="bar"></div>

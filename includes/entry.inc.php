@@ -3,6 +3,9 @@ require "dhb.inc.php";
 
 function createEntry(int $userid, int $plastic, int $glass, int $alu, float $lon, float $lat): void
 {
+    if ($plastic < 0) $plastic = 0;
+    if ($glass < 0) $glass = 0;
+    if ($alu < 0) $alu = 0;
     $total = $plastic + $glass + $alu;
     $worth = $total * 50;
     $price = $total * 24;
@@ -115,6 +118,9 @@ function getMyEntries(int $userid): array
 
 function editEntry(int $id, int $userid, int $plastic, int $glass, int $alu, float $lon = 0, float $lat = 0): bool
 {
+    if ($plastic < 0) $plastic = 0;
+    if ($glass < 0) $glass = 0;
+    if ($alu < 0) $alu = 0;
     $query = "SELECT userid, lon, lat FROM entry WHERE id = :id;";
     $result =  returnQuery($query, ["id" => $id]);
     if ($result["userid"] != $userid) return false;

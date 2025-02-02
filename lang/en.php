@@ -90,4 +90,10 @@ return [
     "aluminium" => "ALUMINIUM",
     "missing-location" => "Location data is missing",
     "missing-or-wrong-2fa" => "2fa one time code is missing or incorrect",
+    "2fa-disabled" => "2fa has been successfully disabled",
+    "2fa-enabled" => "2fa has been successfully enabled",
+    "invalid-2fa" => "Invalid 2fa one time code",
+    "genQR-first" => "Generate QR code first",
+    "genQR-success" => "QR code successfully generated",
+    "invalid-action" => "Requested action could not be performed",
 ];

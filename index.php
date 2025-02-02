@@ -21,7 +21,7 @@ $texts = initLang();
     <link rel="stylesheet" href="styles/styles_entry.css">
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/languagedropdown.css">
-    <title>Rematch</title>
+    <title>ReMatch</title>
 </head>
 <body>
 <?= navbar() ?>

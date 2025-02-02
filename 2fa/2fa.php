@@ -1,19 +1,15 @@
 <?php
-require_once "../includes/2fa.inc.php";
+require_once __DIR__ . "/../includes/2fa.inc.php";
 require_once __DIR__ . "/../includes/config.php";
 
 if ($_SERVER["REQUEST_METHOD"]=="POST") {
-    $enabled = (is2faOnAndEnabled($_SESSION["userid"]) ?? 0) == 1;
-    $otp = str_replace(" ", "", $_POST["otp"]);
-    $error = !run2tfa($otp, !$enabled);
-    if ($error) {
-        header("Location: ../index.php?enable=failure");
+    $enabled = (is2faOnOrEnabled($_SESSION["userid"]) ?? 0) == 1;
+    if (!$enabled) exit();
+    $otp = str_replace(" ", "", $_POST["otp"] ?? 0);
+    if (verify2fa($otp, $_SESSION["userid"])) {
+        loginSuccessful(useridQuery($_SESSION["userid"]));
         exit();
     } else {
-        if ($enabled) {
-            loginSuccessful(useridQuery($_SESSION["userid"]));
-            exit();
-        }
-        header("Location: ../index.php?enable=success");
+        header("Location: ./?verify=failed");
     }
 }

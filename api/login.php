@@ -29,8 +29,8 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             exit();
         }
 
-        $tfa = is2faOnAndEnabled($result["id"]);
-        if (!empty($tfa) && $tfa == 1 && !verify2fa($data["2fa"] ?? 0, $result["id"])) {
+        $tfa = is2faOnOrEnabled($result["id"]) == 1;
+        if ($tfa && !verify2fa($data["2fa"] ?? 0, $result["id"])) {
             $code = "missing-or-wrong-2fa";
             echo json_encode(["status" => "error", "code" => $code, "message" => $en[$code]]);
             exit();
