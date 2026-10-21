@@ -1,7 +1,5 @@
 <?php
 header("Content-Type: application/json");
-
-// Handle CORS for cross-origin requests (optional but recommended)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");

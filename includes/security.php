@@ -22,9 +22,9 @@ function validateCSRFToken($token): bool
 
 function cloudflareTurnstile($turnstileResponse): bool
 {
-    $secretKey = '[REDACTED_CLOUDFLARE_TURNSTILE_KEY]';
+    $env = require __DIR__ . '/env.php';
+    $secretKey = $env['TURNSTILE_SECRET'];
 
-    // Verify the response with Cloudflare's API
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "https://challenges.cloudflare.com/turnstile/v0/siteverify");
     curl_setopt($ch, CURLOPT_POST, 1);

@@ -9,17 +9,13 @@ body {
     position: fixed; 
     bottom: 5px;
     right: 5px;
-    /*fix igazitas(jobb also sarok)*/
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    /*kor alak*/
     background-color: #4CAF50;
-    /*szinek, betu*/
     justify-content: center;
     text-align: center;
     line-height: 99px;
-    /*kozepreigazitas*/
 }
 .plus{
     color: white;
@@ -33,10 +29,10 @@ body {
     transform: scale(1.05);
 }
 .navbar {
-    background-color: #4CAF50; /* Zöld háttér */
-    color: white; /* Fehér szöveg */
-    padding: 15px; /* Párnázás */
-    font-size: 24px; /* Betűméret */
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    font-size: 24px;
     font-family: Arial, Helvetica, sans-serif;
 }
 .navdiv{

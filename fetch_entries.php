@@ -16,8 +16,6 @@ $userLat = isset($_GET['lat']) ? floatval($_GET['lat']) : 0;
 $userLon = isset($_GET['lon']) ? floatval($_GET['lon']) : 0;
 $limit = $_GET['limit'] ?? 20;
 
-// Fetch sorted entries
 $entries = getEntriesSearchAndSort($search, $sort, $order === "DESC", $limit, $userLat, $userLon);
 
-// Return JSON response
 echo json_encode($entries);

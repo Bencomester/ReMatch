@@ -10,7 +10,6 @@ function emailChange($username, $link) : string {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Your Email Address Change</title>
     <style>
-        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f7;
@@ -71,14 +70,11 @@ function emailChange($username, $link) : string {
     </style>
 </head>
 <body>
-    <!-- Email Container -->
     <div class="email-container">
-        <!-- Header Section -->
         <div class="header">
             <h1>Confirm Your Email Address Change</h1>
         </div>
 
-        <!-- Body Section -->
         <div class="body">
             <p>Hi $username,</p>
             <p>We received a request to change the email address associated with your account. If you made this request, please confirm your new email address by clicking the button below:</p>
@@ -92,7 +88,6 @@ function emailChange($username, $link) : string {
             <p>Thank you for keeping your account secure!</p>
         </div>
 
-        <!-- Footer Section -->
         <div class="footer">
             <p>If you're having trouble clicking the button, copy and paste the URL below into your web browser:</p>
             <p>$link</p>

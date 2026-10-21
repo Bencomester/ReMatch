@@ -4,7 +4,6 @@ require_once "../lang/index.php";
 require_once "../includes/navbar.php";
 require_once "../includes/geoip.php";
 
-// Check if the user is logged in by verifying session variables
 if (!isset($_SESSION['logged-in'])) {
     header("Location: .");
     exit();
@@ -12,7 +11,9 @@ if (!isset($_SESSION['logged-in'])) {
 
 
 $texts = initLang();
-$data = getLocationData(getUserIP())
+$data = getLocationData(getUserIP());
+$env = require '../includes/env.php';
+$mapsApiKey = $env['GOOGLE_MAPS_KEY'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,12 +71,12 @@ $data = getLocationData(getUserIP())
     async function loadGoogleMaps() {
         return new Promise((resolve, reject) => {
             if (window.google && google.maps) {
-                resolve(); // Google Maps is already loaded
+                resolve();
                 return;
             }
 
             const script = document.createElement("script");
-            script.src = "https://maps.googleapis.com/maps/api/js?key=[REDACTED_MAPS_API_KEY]&libraries=marker,places&callback=initMap";
+            script.src = "https://maps.googleapis.com/maps/api/js?key=<?=$mapsApiKey?>&libraries=marker,places&callback=initMap";
             script.async = true;
             script.defer = true;
             script.onload = resolve;
@@ -94,7 +95,6 @@ $data = getLocationData(getUserIP())
 
         const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-        // Initialize the map
         map = new google.maps.Map(document.getElementById("map"), {
             mapId: "1",
             zoom: 12,
@@ -103,10 +103,8 @@ $data = getLocationData(getUserIP())
 
         getLocation(AdvancedMarkerElement)
 
-        // Add a marker
         createNewMarker(AdvancedMarkerElement, initialLocation.lat, initialLocation.lng);
 
-        // Add a click listener to add markers
         map.addListener("click", (event) => {
             createNewMarker(AdvancedMarkerElement, event.latLng.lat(), event.latLng.lng());
         });
@@ -128,22 +126,18 @@ $data = getLocationData(getUserIP())
     }
 
     function createNewMarker(AdvancedMarkerElement, lat, lng) {
-        // Remove the old marker
-        if (marker) marker.setMap(null); // Remove old marker
+        if (marker) marker.setMap(null);
 
-        // Create a new marker
         marker = new AdvancedMarkerElement({
             position: {lat, lng},
             map: map,
             title: "Your Location",
         });
 
-        // Update hidden input values
         longInp.value = lng;
         latInp.value = lat;
     }
 
-    // Form validation
     const form = document.getElementById("form");
     form.addEventListener("submit", function (event) {
         const items = document.querySelectorAll("select[name='item[]']");
@@ -156,21 +150,18 @@ $data = getLocationData(getUserIP())
             const price = prices[i];
 
             if (item.value === "") {
-                // Maybe some css highlighting here as well (eg: item.class = ...)
                 alert("Please choose an item for all rows.");
                 event.preventDefault();
                 return;
             }
 
             if (parseInt(number.value) < 1) {
-                // Maybe some css highlighting here as well (eg: number.class = ...)
                 alert("Please enter a valid number of items (at least 1).");
                 event.preventDefault();
                 return;
             }
 
             if (parseFloat(price.value) < 5 || parseFloat(price.value) > 300) {
-                // Maybe some css highlighting here as well (eg: price.class = ...)
                 alert("Please enter a valid price (greater than 0 and less than 300).");
                 event.preventDefault();
                 return;

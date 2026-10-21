@@ -4,7 +4,6 @@ require_once '../includes/signup_contr.inc.php';
 require_once '../includes/security.php';
 require_once "../lang/index.php";
 
-// Check if the user is logged in by verifying session variables
 if (isset($_SESSION['logged-in'])) {
     header("Location: ..");
     exit();
@@ -121,13 +120,11 @@ if (isset($_GET["newemail"]) && !!filter_var($_GET["newemail"], FILTER_VALIDATE_
     <a href=".."><?= $texts["i-have-an-account"] ?></a>
 </div>
 
-<!-- Include JS -->
 <script type="module">
 
     document.addEventListener("DOMContentLoaded", function () {
         const phoneInput = document.getElementById("phone");
         const telephoneInput = document.getElementById("telephone")
-        // Initialize IntlTelInput
         const iti = intlTelInput(phoneInput, {
             initialCountry: "hu",
             preferredCountries: ["hu"],
@@ -139,14 +136,12 @@ if (isset($_GET["newemail"]) && !!filter_var($_GET["newemail"], FILTER_VALIDATE_
             utilsScript: "../node_modules/intl-tel-input/build/js/utils.js",
         });
 
-        // Prevent form submission if the number is invalid
         const form = document.getElementById("signupForm");
         form.addEventListener("submit", function (event) {
             if (!iti.isValidNumber() && phoneInput.value) {
                 alert("Please enter a valid phone number.");
                 event.preventDefault();
             } else {
-                // Use the full international number for backend processing
                 telephoneInput.value = iti.getNumber(); // E164 format for backend
                 const submitButton = document.getElementById("submit");
                 submitButton.disabled = true;
@@ -160,13 +155,11 @@ if (isset($_GET["newemail"]) && !!filter_var($_GET["newemail"], FILTER_VALIDATE_
     function checkPasswordStrength() {
         const password = document.getElementById("password").value;
 
-        // Define password strength criteria
             const lengthCheck = password.length >= 8;
             const upperCheck = /[A-Z]/.test(password);
             const lowerCheck = /[a-z]/.test(password);
             const numberCheck = /[0-9]/.test(password);
 
-            // Update each requirement based on whether the criteria are met
             toggleRequirement("length-requirement", lengthCheck);
             toggleRequirement("uppercase-requirement", upperCheck);
             toggleRequirement("lowercase-requirement", lowerCheck);

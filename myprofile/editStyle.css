@@ -8,7 +8,7 @@
 /* Body Style */
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #5AB9EA, #C1C8E4); /* Blue gradient background */
+    background: linear-gradient(135deg, #5AB9EA, #C1C8E4);
     min-height: 100vh;
     color: #333;
 }
@@ -134,7 +134,7 @@ input:focus,
 }
 
 .edit-success {
-    background-color: green; /* Light blue color for success */
+    background-color: green;
     color: white;
     padding: 10px;
     border-radius: 5px;

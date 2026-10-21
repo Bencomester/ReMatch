@@ -33,13 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         10 => 'file-error-type',
         11 => 'file-error-save'
     ];
-    // Check if the file was uploaded
+
     if (isset($_FILES["profile-picture"])) {
         if (($_FILES["profile-picture"]["error"] ?? 0) == 0) {
             $code = handlePicture($_FILES["profile-picture"]);
             if ($code != 0) $errors[] = $code;
         } else {
-            // if ($_FILES["profile-picture"]["error"] != 4) $errors[] = $phpFileUploadErrors[$_FILES["profile-picture"]["error"]];
             if ($_FILES["profile-picture"]["error"] != 4) $errors[] = "file-error";
         }
     }

@@ -22,8 +22,8 @@
 }
 .button_div{
     display: flex;
-    flex-direction: column; /* Stack the buttons vertically */
-    gap: 10px; /* Add space between the buttons */
+    flex-direction: column;
+    gap: 10px;
     text-align: center;
 
 }
@@ -42,7 +42,7 @@
 }
 
 #output {
-    max-height: 8em; /* Adjust height as needed */
+    max-height: 8em;
     overflow-y: auto;
     margin-bottom: 10px;
     padding: 10px;

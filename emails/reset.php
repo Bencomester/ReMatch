@@ -11,21 +11,17 @@ function resetEmail($resetLink, $minute) : string {
 </head>
 <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f7; color: #333;">
 
-<!-- Container -->
 <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f7; padding: 20px;">
     <tr>
         <td align="center">
-            <!-- Email Content -->
             <table width="100%" max-width="600px" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden;">
 
-                <!-- Header -->
                 <tr>
                     <td style="background-color: #ff6f20; padding: 20px; text-align: center;">
                         <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Password Reset Request</h1>
                     </td>
                 </tr>
 
-                <!-- Body -->
                 <tr>
                     <td style="padding: 40px 20px; text-align: left;">
                         <p style="font-size: 16px; color: #555;">Hello,</p>
@@ -43,7 +39,6 @@ function resetEmail($resetLink, $minute) : string {
                     </td>
                 </tr>
 
-                <!-- Footer -->
                 <tr>
                     <td style="background-color: #f4f4f7; padding: 20px; text-align: center; font-size: 12px; color: #888;">
                         <p style="margin: 0;">If you’re having trouble clicking the password reset button, copy and paste the URL below into your web browser:</p>

@@ -14,21 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: reset.php?token=" . $token);
     }
 
-    // Check if the token is valid
     require '../includes/dhb.inc.php';
     $query = "SELECT email FROM password_resets WHERE token = :token AND expiry >= :now";
     $values = ["token" => $token, "now" => date('U')];
     $data = returnQuery($query, $values);
 
     if ($data) {
-        // Token is valid, update the user's password
         $email = $data['email'];
 
         $query = "SELECT id FROM users WHERE email = :email";
         $id = returnQuery($query, ["email" => $email])["id"];
         resetPassword($id, $newPassword);
 
-        // Delete the token
         $query = "DELETE FROM password_resets WHERE email = :email";
         $values = ["email" => $email];
         doQuery($query, $values);

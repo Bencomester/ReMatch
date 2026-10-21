@@ -67,84 +67,68 @@ function handlePictureFromBase64($base64String, $id): int
     $allowedTypes = ["image/jpeg", "image/png"];
     $maxFileSize = 50 * 1024 * 1024; // 50MB max file size
 
-    // Decode the Base64 string and generate a temporary file
     $decodedImage = base64_decode($base64String);
     if ($decodedImage === false) {
-        return 2; // Invalid Base64 string
+        return 2;
     }
 
-    // Create a temporary file path
     $tempFilePath = tempnam(sys_get_temp_dir(), 'pfp_');
     file_put_contents($tempFilePath, $decodedImage);
 
-    // Detect the image type
     $fileInfo = getimagesize($tempFilePath);
     if ($fileInfo === false || !in_array($fileInfo['mime'], $allowedTypes)) {
-        unlink($tempFilePath); // Remove the temporary file
-        return 2; // Unsupported file type
+        unlink($tempFilePath);
+        return 2;
     }
 
-    // Validate file size
     $fileSize = strlen($decodedImage);
     if ($fileSize > $maxFileSize) {
         unlink($tempFilePath);
-        return 11; // File size exceeds limit
+        return 11;
     }
 
-    // Generate a new unique file name (to avoid overwriting)
     $fileExtension = pathinfo($fileInfo['mime'], PATHINFO_EXTENSION);
     $newFileName = $id . "." . $fileExtension;
     $uploadDir = "../pfp/";
     $uploadFilePath = $uploadDir . $newFileName;
 
-    // Remove old files
     $extensions = ["jpeg", "jpg", "png"];
     foreach ($extensions as $ext) {
         $oldFile = $uploadDir . $id . "." . $ext;
         if (file_exists($oldFile)) unlink($oldFile);
     }
 
-    // Move the temporary file to the upload directory
     if (rename($tempFilePath, $uploadFilePath)) {
         cropImageToSquare($uploadFilePath);
         resizeImage($uploadFilePath, 150);
-        return 0; // Success
+        return 0;
     } else {
-        unlink($tempFilePath); // Cleanup on failure
-        return 11; // File upload error
+        unlink($tempFilePath);
+        return 11;
     }
 }
 
 function handlePicture($pfp): int
 {
-    // Define allowed file types
     $allowedTypes = ["image/jpeg", "image/png"];
     $maxFileSize = 50 * 1024 * 1024; // 50MB max file size
 
-    // Get file info
     $fileTmpPath = $pfp["tmp_name"];
     $fileName = $pfp["name"];
     $fileSize = $pfp["size"];
     $fileType = $pfp["type"];
 
-    // Get the file extension
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    // Generate a new unique file name (to avoid overwriting)
     $newFileName = $_SESSION["userid"] . "." . $fileExtension;
 
-    // Define the target directory to save the image
     $uploadDir = "../pfp/";
 
-    // Validate file type and size
     if (!in_array($fileType, $allowedTypes)) {
-        // Error: Only JPG and PNG files are allowed.;
         return 2;
     } else if ($fileSize > $maxFileSize) {
-        // Error: File size exceeds the 50MB limit.;
         return 11;
     } else {
-        // Move the file from temporary folder to the target directory
         $uploadFilePath = $uploadDir . $newFileName;
         $test = $uploadDir . $_SESSION["userid"] . ".";
         $extensions = ["jpeg", "jpg", "png"];
@@ -155,10 +139,8 @@ function handlePicture($pfp): int
         if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
             cropImageToSquare($uploadFilePath);
             resizeImage($uploadFilePath, 150);
-            // File successfully uploaded to: $uploadFilePath;
             return 0;
         } else {
-            // Error: There was a problem uploading the file.;
             return 11;
         }
     }
@@ -168,13 +150,10 @@ function resizeImage($sourcePath, $newWidth, $newHeight = 0, $destinationPath = 
 {
     if ($newHeight == 0) $newHeight = $newWidth;
     if ($destinationPath == "") $destinationPath = $sourcePath;
-    // Get the original image dimensions and type
     list($width, $height, $type) = getimagesize($sourcePath);
 
-    // Create a new blank image with the desired dimensions
     $newImage = imagecreatetruecolor($newWidth, $newHeight);
 
-    // Load the source image based on its type
     switch ($type) {
         case IMAGETYPE_JPEG:
             $sourceImage = imagecreatefromjpeg($sourcePath);
@@ -189,10 +168,8 @@ function resizeImage($sourcePath, $newWidth, $newHeight = 0, $destinationPath = 
             return;
     }
 
-    // Resize the original image and copy it to the new image
     imagecopyresampled($newImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
-    // Save the resized image to the destination path
     switch ($type) {
         case IMAGETYPE_JPEG:
             imagejpeg($newImage, $destinationPath, 90); // 90 is the quality for JPEG
@@ -205,7 +182,6 @@ function resizeImage($sourcePath, $newWidth, $newHeight = 0, $destinationPath = 
             break;
     }
 
-    // Free up memory
     imagedestroy($newImage);
     imagedestroy($sourceImage);
 }
@@ -213,13 +189,11 @@ function resizeImage($sourcePath, $newWidth, $newHeight = 0, $destinationPath = 
 function cropImageToSquare($sourcePath, $destinationPath = ""): void
 {
     if ($destinationPath == "") $destinationPath = $sourcePath;
-    // Load the image
     $imageInfo = getimagesize($sourcePath);
     $width = $imageInfo[0];
     $height = $imageInfo[1];
     $imageType = $imageInfo[2];
 
-    // Determine the image type
     switch ($imageType) {
         case IMAGETYPE_JPEG:
             $image = imagecreatefromjpeg($sourcePath);
@@ -234,24 +208,20 @@ function cropImageToSquare($sourcePath, $destinationPath = ""): void
             die('Unsupported image type.');
     }
 
-    // Calculate the size of the square
     $size = min($width, $height);
     $xOffset = ($width > $height) ? ($width - $height) / 2 : 0;
     $yOffset = ($height > $width) ? ($height - $width) / 2 : 0;
 
-    // Create a blank square canvas
     $squareImage = imagecreatetruecolor($size, $size);
 
-    // Copy and crop the image
     imagecopyresampled(
         $squareImage, $image,
-        0, 0, // Destination x, y
-        $xOffset, $yOffset, // Source x, y
-        $size, $size, // Destination width, height
-        $size, $size // Source width, height
+        0, 0,
+        $xOffset, $yOffset,
+        $size, $size,
+        $size, $size
     );
 
-    // Save the cropped image
     switch ($imageType) {
         case IMAGETYPE_JPEG:
             imagejpeg($squareImage, $destinationPath, 90); // Quality: 0-100
@@ -264,7 +234,6 @@ function cropImageToSquare($sourcePath, $destinationPath = ""): void
             break;
     }
 
-    // Clean up memory
     imagedestroy($image);
     imagedestroy($squareImage);
 }

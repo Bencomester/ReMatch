@@ -91,7 +91,6 @@ $texts = initLang();
         const submitButton = document.getElementById("submit");
 
         form.addEventListener("submit", function (event) {
-            // Show loading state
             submitButton.disabled = true;
             submitButton.classList.add('loading');
         });

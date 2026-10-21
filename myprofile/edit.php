@@ -4,7 +4,7 @@ require_once '../includes/security.php';
 require_once "../includes/dhb.inc.php";
 require_once "../lang/index.php";
 require_once "../includes/navbar.php";
-// Check if the user is logged in by verifying session variables
+
 if (!isset($_SESSION['logged-in'])) {
     header("Location: ..");
     exit();
@@ -30,18 +30,15 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
     <style>
         .iti--allow-dropdown {
             width: 100%;
-            /* Make the input field full width */
         }
     </style>
 </head>
 <body>
 <?= navbar() ?>
-<!-- Edit Profile Container -->
 <div class="edit-profile-container">
     <h2>Edit Profile</h2>
     <form id="updateForm" action="update.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-        <!-- Profile Picture Upload -->
         <div class="profile-picture-section">
             <label for="profile-picture">Profile Picture</label>
             <div class="profile-picture-preview">
@@ -52,7 +49,6 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
             <input type="file" id="profile-picture" name="profile-picture" accept="image/*">
         </div>
 
-        <!-- Name Field -->
         <label for="lastname">Last Name</label>
         <input type="text" id="lastname" name="lastname" value="<?= $data["lastname"]?>">
 
@@ -62,7 +58,6 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
         <label for="username">Username*</label>
         <input type="text" id="username" name="username" value="<?= $data["username"]?>" required>
 
-        <!-- Email Field -->
         <label for="email">Email*</label>
         <input type="email" id="email" name="email" value="<?= $data["email"]?>" required>
 
@@ -91,20 +86,18 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
             echo '<div class="edit-success">' . $texts["edit-success"] . '</div>';
         }
         ?>
-        <!-- Save Changes Button -->
+
         <button type="submit" class="btn save-btn">Save Changes</button>
         <a href="." class="btn cancel-btn">Cancel</a>
     </form>
 </div>
 
-<!-- JavaScript for Image Preview -->
 <script type="module">
     import intlTelInputUtils from "../node_modules/intl-tel-input/build/js/utils.js";
 
     document.addEventListener("DOMContentLoaded", function() {
         const phoneInput = document.getElementById("phone");
         const telephoneInput =  document.getElementById("telephone")
-        // Initialize IntlTelInput
         const iti = window.intlTelInput(phoneInput, {
             initialCountry: "hu",
             loadUtilsOnInit: true,
@@ -115,14 +108,12 @@ $data = returnQuery($query, ["userid" => $_SESSION['userid']]);
             nationalMode: false,
         });
 
-        // Prevent form submission if the number is invalid
         const form = document.getElementById("updateForm");
         form.addEventListener("submit", function(event) {
             if (!iti.isValidNumber()  && phoneInput.value) {
                 alert("Please enter a valid phone number.");
                 event.preventDefault();
             } else {
-                // Use the full international number for backend processing
                 telephoneInput.value = iti.getNumber(intlTelInputUtils.numberFormat.E164); // E164 format for backend
             }
         });

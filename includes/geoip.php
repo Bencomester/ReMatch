@@ -7,21 +7,14 @@ use GeoIp2\Database\Reader;
 function getLocationData($ipAddress)
 {
     try {
-        // Path to the GeoLite2 database file
         $databaseFile = __DIR__ . '/GeoLite2-City.mmdb';
 
-        // Initialize the GeoIP2 Reader
         $reader = new Reader($databaseFile);
 
-        // Replace with the user's IP address
-        $ipAddress = '[REDACTED_IP]';           //  This line should be removed when out of LAN
-
-        // Query the database
         $record = $reader->city($ipAddress);
 
-        // Extract location details
-        $country = $record->country->name;    // Country name
-        $city = $record->city->name;          // City name
+        $country = $record->country->name;
+        $city = $record->city->name;
         $latitude = $record->location->latitude;
         $longitude = $record->location->longitude;
 
@@ -34,13 +27,10 @@ function getLocationData($ipAddress)
 
 function getUserIP() {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        // Check for shared internet IP
         $ip = $_SERVER['HTTP_CLIENT_IP'];
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        // Check for the forwarded IP address
         $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
     } else {
-        // Default to remote address
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     return $ip;

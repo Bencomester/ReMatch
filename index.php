@@ -26,7 +26,6 @@ $texts = initLang();
 <body>
 <?= navbar() ?>
 
-<!-- Sorting Controls -->
 <div class="sort-container">
     <label for="search">Search:</label>
     <input type="text" id="search" name="search">
@@ -74,7 +73,6 @@ $texts = initLang();
 
     let userLat = 0, userLon = 0;
 
-    // Fetch and display entries
     async function fetchEntries() {
         const sortBy = document.getElementById("sortBy").value;
         const order = document.getElementById("order").value;
@@ -85,7 +83,7 @@ $texts = initLang();
         const entries = await response.json();
 
         const blogsPage = document.getElementById("blogspage");
-        blogsPage.innerHTML = ""; // Clear previous entries
+        blogsPage.innerHTML = "";
 
         entries.forEach(item => {
             const distanceText = item.distance ? `${item.distance.toFixed(1)} km` : "N/A";
@@ -106,19 +104,18 @@ $texts = initLang();
         });
     }
 
-    // Get user location
     function getLocation() {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     userLat = position.coords.latitude;
                     userLon = position.coords.longitude;
-                    fetchEntries(); // Fetch data after getting location
+                    fetchEntries();
                 },
-                () => fetchEntries() // If location denied, still fetch data
+                () => fetchEntries()
             );
         } else {
-            fetchEntries(); // Fetch data if geolocation is not available
+            fetchEntries();
         }
     }
 

@@ -1,7 +1,5 @@
 <?php
 header("Content-Type: application/json");
-
-// Handle CORS for cross-origin requests (optional but recommended)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -21,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $errors = [];
     $code = "";
-    // Client validates: password match
+
     if (empty($username) || empty($pwd) || empty($email)) {
         $code = "empty-email-username-pwd";
         $errors[$code] = $en[$code];
@@ -59,11 +57,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($errors)) {
         echo json_encode(["status" => "error",  "code" => $code, "message" => $en[$code], "all-codes" => array_keys($errors)]);
-        //echo json_encode(["status" => "error", "error" => array_values($errors)[0]]);
         exit();
     }
 
-    // Create user
+
     createUserAndSendEmail($username, $pwd, $email, $telephone, $firstname, $lastname);
     $code = "signup-success";
     echo json_encode(["status" => "success", "code" => $code, "message" => $en[$code]]);

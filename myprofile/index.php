@@ -28,7 +28,6 @@ $data = getData($_SESSION['userid'])
 </head>
 <body>
 <?= navbar() ?>
-<!-- Profile Container -->
 <div class="profile-container">
     <?php if (($_GET["2fa"] ?? "") == "enabled") echo "<div class='login-success'>2fa successfully enabled</div>"; ?>
     <?php if (($_GET["2fa"] ?? "") == "disabled") echo "<div class='login-error'>2fa successfully disabled</div>"; ?>
@@ -37,17 +36,14 @@ $data = getData($_SESSION['userid'])
     else $name = $data["firstname"] . " " . $data["lastname"];
     if (isset($data["firstname"]) || $data["lastname"]) echo '<h2 class="user-name">' . $name . '</h2>'
     ?>
-    <!-- Profile Picture -->
     <div class="profile-picture">
         <img src="../<?= getpfp($_SESSION['userid']) ?>" alt="Profile Picture">
     </div>
 
-    <!-- User Info -->
     <h2 class="user-name"><?= $data["username"] ?></h2>
     <p class="user-email"><?= $data["email"] ?></p>
     <?= empty($data["phone"]) ? "" : '<p class="user-email">' . $data["phone"] . '</p>' ?>
 
-    <!-- Profile Actions -->
     <div class="profile-actions">
         <button class="btn edit-btn" onclick="window.location.href='edit.php';"><?= $texts["edit-profile"] ?></button>
         <button class="btn edit-btn"

@@ -27,22 +27,17 @@ function disable2fa($userid): void
 
 function create2fa($userid): string
 {
-    // Generate a TOTP instance
     $totp = TOTP::create();
 
-    // Get the generated secret key
     $secret = $totp->getSecret();
 
-    // Set additional properties
     $totp->setLabel('ReMatch');
     $totp->setIssuer('rematch.com');
 
-    // Generate a QR code URL for the user to scan
     $qrCodeUrl = $totp->getProvisioningUri();
 
     doQuery("INSERT INTO 2fa (userid, secret, enabled, timestamp) values (:userid, :secret, 0, unix_timestamp())", ["userid" => $userid, "secret" => $secret]);
 
-    // Display the QR code using a service like Google Chart API
     return base64_encode(createQR($qrCodeUrl)->getString());
 }
 
@@ -63,7 +58,6 @@ function verify2fa($userOtp, $userid): bool
     $totp->setLabel('ReMatch');
     $totp->setIssuer('rematch.com');
 
-    // Verify the OTP
     return $totp->verify($userOtp);
 }
 

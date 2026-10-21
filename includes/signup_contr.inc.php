@@ -37,32 +37,23 @@ function is_pwd_not_the_same(string $pwd,string $pwd2) : bool {
 }
 
 function is_password_strong($password) : string {
-    // Check length
     if (strlen($password) < 8) {
         return "pwd-8-chars";
     }
 
-    // Check for lowercase letter
     if (!preg_match('/[a-z]/', $password)) {
         return "pwd-lower";
     }
 
-    // Check for uppercase letter
     if (!preg_match('/[A-Z]/', $password)) {
         return "pwd-upper";
     }
 
-    // Check for number
     if (!preg_match('/[0-9]/', $password)) {
         return "pwd-number";
     }
 
-    // Check for special character
-    //if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)) {
-    //    return "Password must contain at least one special character.";
-    //}
-
-    return "Strong"; // Password meets all requirements
+    return "Strong";
 }
 
 function is_email_taken(string $email, $id = 0) : bool {

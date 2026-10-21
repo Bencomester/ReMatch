@@ -1,7 +1,5 @@
 <?php
 header("Content-Type: application/json");
-
-// Handle CORS for cross-origin requests (optional but recommended)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -19,7 +17,6 @@ if($_SERVER["REQUEST_METHOD"]=="GET") {
         $data = getData($id);
         $imageData = file_get_contents(__DIR__ . "/../" . getpfp($id));
         $base64Image = base64_encode($imageData);
-        //$jsonReadyImage = 'data:image/png;base64,' . $base64Image;
         echo json_encode(["status" => "success", "code" => $code, "message" => $en[$code],
                 "userid" => $id,
                 "username" => $data["username"],

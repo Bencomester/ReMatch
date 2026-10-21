@@ -8,7 +8,7 @@
 /* Body Style */
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #5AB9EA, #C1C8E4); /* Blue gradient background */
+    background: linear-gradient(135deg, #5AB9EA, #C1C8E4);
     min-height: 100vh;
     color: #333;
 }
@@ -44,7 +44,7 @@ body {
 /* User Info */
 .user-name {
     font-size: 1.8rem;
-    color: #6880E9; /* Primary blue color */
+    color: #6880E9;
     margin-bottom: 10px;
 }
 
@@ -56,7 +56,7 @@ body {
 
 .user-role {
     font-size: 1rem;
-    color: #8860D0; /* Secondary blue color */
+    color: #8860D0;
     margin-bottom: 20px;
     font-weight: bold;
 }

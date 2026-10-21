@@ -11,21 +11,17 @@ function verificationEmail($username, $link) : string {
 </head>
 <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f7; color: #333;">
 
-<!-- Main Container -->
 <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f7; padding: 20px;">
     <tr>
         <td align="center">
-            <!-- Email Content Wrapper -->
             <table width="100%" max-width="600px" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden;">
                 
-                <!-- Header -->
                 <tr>
                     <td style="background-color: #4CAF50; padding: 20px; text-align: center;">
                         <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Verify Your Email Address</h1>
                     </td>
                 </tr>
                 
-                <!-- Body -->
                 <tr>
                     <td style="padding: 30px 20px; text-align: left;">
                         <p style="font-size: 16px; color: #555;">Hello $username,</p>
@@ -43,7 +39,6 @@ function verificationEmail($username, $link) : string {
                     </td>
                 </tr>
 
-                <!-- Footer -->
                 <tr>
                     <td style="background-color: #f4f4f7; padding: 20px; text-align: center; font-size: 12px; color: #888;">
                         <p style="margin: 0;">If you’re having trouble clicking the verification button, copy and paste the URL below into your web browser:</p>

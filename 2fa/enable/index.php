@@ -56,17 +56,13 @@ else if ($enabled == 0) $code = getSecretQR($_SESSION["userid"]);
 </div>
 
 <script>
-    // Function to format the OTP field as 000 000
     function formatOtp(input) {
-        // Remove all non-numeric characters
         let value = input.value.replace(/\D/g, '');
 
-        // Limit to 6 digits
         if (value.length > 6) {
             value = value.substring(0, 6);
         }
 
-        // Format value as 000 000 (inserting a space after every 3 digits)
         if (value.length <= 3) {
             input.value = value;
         } else {
@@ -74,7 +70,6 @@ else if ($enabled == 0) $code = getSecretQR($_SESSION["userid"]);
         }
     }
 
-    // Add event listener for the OTP input field
     document.addEventListener("DOMContentLoaded", function () {
         const otpInput = document.getElementById('otp');
 

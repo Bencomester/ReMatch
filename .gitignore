@@ -1,0 +1,13 @@
+# Secrets and Environment
+includes/env.php
+replace.txt
+
+# IDE Settings
+.idea/
+
+# Large Databases
+*.mmdb
+
+# Node dependencies (since package.json is present)
+node_modules/
+vendor/

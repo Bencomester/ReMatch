@@ -29,24 +29,21 @@ $texts = initLang();
 </head>
 <body>
 <?= navbar() ?>
-<!-- Profile Container -->
 <div class="profile-container">
     <?php
     if ($texts["lang"] == "hu") $name = $data["lastname"] . " " . $data["firstname"];
     else $name = $data["firstname"] . " " . $data["lastname"];
     if (isset($data["firstname"]) || $data["lastname"]) echo '<h2 class="user-name">' . $name . '</h2>'
     ?>
-    <!-- Profile Picture -->
+
     <div class="profile-picture">
         <img src="<?= getpfp($id) ?>" alt="Profile Picture">
     </div>
 
-    <!-- User Info -->
     <h2 class="user-name"><?= $data["username"] ?></h2>
     <p class="user-email"><?= $data["email"] ?></p>
     <?= empty($data["phone"]) ? "" : '<p class="user-email">' . $data["phone"] . '</p>' ?>
 
-    <!-- Profile Actions -->
     <div class="profile-actions">
         <button class="btn edit-btn" onclick="window.location.href='../myprofile';"><?= $texts["my-profile"] ?></button>
     </div>

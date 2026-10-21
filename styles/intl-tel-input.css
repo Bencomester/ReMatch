@@ -28,12 +28,10 @@
 .phone-input-container {
     position: relative;
     margin-bottom: 1rem;
-    /* Adjust as needed */
 }
 
 .iti--allow-dropdown {
     width: 100%;
-    /* Make the input field full width */
 }
 
 #phone {
@@ -47,15 +45,12 @@
 
 .iti--container {
     z-index: 1000;
-    /* Ensure the dropdown appears above other elements */
 }
 
 .iti__flag-container {
     margin-right: 5px;
-    /* Add some spacing if the flag overlaps with the input */
 }
 
 .iti__country-container {
     width: 200px;
-    /* Adjust the width of the selected flag container */
 }

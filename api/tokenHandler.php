@@ -3,15 +3,16 @@ require_once __DIR__ . '/../vendor/autoload.php';  // Composer's autoloader
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$secretKey = "secret"; //Change to something secure
+$env = require __DIR__ . '/../includes/env.php';
+$secretKey = $env['JWT_SECRET'];
 
 function generateJWT($userid): string
 {
     global $secretKey;
-    $issuedAt = time();  // When the token is issued
+    $issuedAt = time();
     $payload = [
-        'iat' => $issuedAt,        // Issued at: time the token was generated
-        'userid' => $userid        // User ID or any other information you want to store
+        'iat' => $issuedAt,
+        'userid' => $userid
     ];
     return JWT::encode($payload, $secretKey, 'HS256');
 }
@@ -25,7 +26,6 @@ function authenticateJWT() {
         exit();
     }
 
-    // Extract the JWT from the "Bearer" part of the Authorization header
     list($jwt) = sscanf($authHeader, 'Bearer %s');
 
     if (!$jwt) {
@@ -35,8 +35,7 @@ function authenticateJWT() {
     }
 
     try {
-        // Decode and verify the token
-        $decodedJWT = JWT::decode($jwt, new Key($secretKey, 'HS256'));  // Return the decoded token payload
+        $decodedJWT = JWT::decode($jwt, new Key($secretKey, 'HS256'));
 
         $pwdDate = returnQuery("SELECT UNIX_TIMESTAMP(pwdDate) FROM users WHERE id = :userid", ["userid"=>($decodedJWT->userid)])["UNIX_TIMESTAMP(pwdDate)"];
         if (empty($pwdDate) || $decodedJWT->iat < $pwdDate) {

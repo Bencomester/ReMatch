@@ -6,6 +6,7 @@ $timeoutDuration = 60 * 60 * 24;              // 24 hours
 function startSession($timeout): void
 {
     if (session_status() === PHP_SESSION_ACTIVE) return;
+    $env = require __DIR__ . '/env.php';
     ini_set('session.use_only_cookies', 1);
     ini_set('session.use_strict_mode', 1);
     ini_set('session.gc_maxlifetime', $timeout);
@@ -14,16 +15,15 @@ function startSession($timeout): void
 
     session_set_cookie_params([
         'lifetime' => $timeout,
-        'domain' => '[REDACTED_LOCAL_IP]',  //Change to public domain
+        'domain' => $env['COOKIE_DOMAIN'],
         'path' => '/',
-        'secure' => true,     //Made self-signed ssl cert for local ip
+        'secure' => true,
         'httponly' => true,
         'samesite' => 'Strict',
     ]);
 
     session_start();
 
-    // Initialize timestamps if not set
     if (!isset($_SESSION['last_regeneration'])) {
         $_SESSION['last_regeneration'] = time();
     }
@@ -34,13 +34,11 @@ function startSession($timeout): void
 
 startSession($timeoutDuration);
 
-// Regenerate session ID after the interval
 if (time() - $_SESSION['last_regeneration'] >= $regenerationInterval) {
-    session_regenerate_id(true); // Secure regeneration
+    session_regenerate_id(true);
     $_SESSION['last_regeneration'] = time();
 }
 
-// Check for session timeout
 if ((time() - $_SESSION['last_activity']) > $timeoutDuration) {
     session_unset();
     session_destroy();
@@ -48,5 +46,4 @@ if ((time() - $_SESSION['last_activity']) > $timeoutDuration) {
     exit();
 }
 
-// Update last activity timestamp
 $_SESSION['last_activity'] = time();

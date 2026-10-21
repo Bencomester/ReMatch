@@ -1,9 +1,9 @@
 <?php
-/** @noinspection ALL */
 header('Content-Type: text/html; charset=utf-8');
-$dsn="mysql:host=localhost;dbname=rematch";
-$dbusername ="root";
-$dbpassword="[REDACTED_DB_PASSWORD]";
+$env = require __DIR__ . '/env.php';
+$dsn = "mysql:host=" . $env['DB_HOST'] . ";dbname=" . $env['DB_NAME'];
+$dbusername = $env['DB_USER'];
+$dbpassword = $env['DB_PASS'];
 try{
     $pdo=new PDO($dsn,$dbusername,$dbpassword);
     $pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
